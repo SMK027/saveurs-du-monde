@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saveurs du Monde – Contact</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <div id="siteHeader"></div>
+
+  <!-- ===== EN-TÊTE DE PAGE ===== -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <h1>Contact</h1>
+      <p>Une question, une suggestion, une recette à partager ? Écrivez-nous !</p>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="section-inner contact-layout">
+
+      <!-- ===== FORMULAIRE ===== -->
+      <div class="contact-form-wrap">
+        <h2>Envoyez-nous un message</h2>
+
+        <form id="contactForm" class="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nom">Nom <span class="required">*</span></label>
+              <input type="text" id="nom" name="nom" placeholder="Votre nom" required />
+              <span class="form-error" id="nomError"></span>
+            </div>
+            <div class="form-group">
+              <label for="prenom">Prénom</label>
+              <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Adresse e-mail <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="exemple@email.com" required />
+            <span class="form-error" id="emailError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="sujet">Sujet <span class="required">*</span></label>
+            <select id="sujet" name="sujet" required>
+              <option value="" disabled selected>Choisissez un sujet…</option>
+              <option value="suggestion">Suggestion de recette</option>
+              <option value="question">Question sur une recette</option>
+              <option value="partenariat">Proposition de partenariat</option>
+              <option value="erreur">Signalement d'erreur</option>
+              <option value="autre">Autre</option>
+            </select>
+            <span class="form-error" id="sujetError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message <span class="required">*</span></label>
+            <textarea id="message" name="message" rows="6" placeholder="Votre message…" required></textarea>
+            <span class="form-error" id="messageError"></span>
+          </div>
+
+          <div class="form-group form-check">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rgpd" name="rgpd" required />
+              J'accepte que mes données soient utilisées pour traiter ma demande.
+            </label>
+            <span class="form-error" id="rgpdError"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">Envoyer le message</button>
+        </form>
+
+        <!-- Message de succès -->
+        <div id="formSuccess" class="form-success hidden">
+          <span class="success-icon">✅</span>
+          <h3>Message envoyé !</h3>
+          <p>Merci pour votre message. Nous vous répondrons dans les plus brefs délais.</p>
+          <p><em>Note : Ceci est une simulation. Aucun message n'a été réellement envoyé.</em></p>
+          <button class="btn btn-outline" id="newMessage">Envoyer un autre message</button>
+        </div>
+      </div>
+
+      <!-- ===== INFOS DE CONTACT ===== -->
+      <aside class="contact-info">
+        <h2>Nos coordonnées</h2>
+
+        <ul class="contact-list">
+          <li>
+            <span class="contact-icon">📍</span>
+            <div>
+              <strong>Adresse</strong>
+              <p>12 rue des Saveurs, 75001 Paris, France</p>
+            </div>
+          </li>
+          <li>
+            <span class="contact-icon">✉️</span>
+            <div>
+              <strong>E-mail</strong>
+              <p><a href="mailto:contact@saveursdumonde.fr">contact@saveursdumonde.fr</a></p>
+            </div>
+          </li>
+          <li>
+            <span class="contact-icon">📞</span>
+            <div>
+              <strong>Téléphone</strong>
+              <p>+33 1 23 45 67 89</p>
+            </div>
+          </li>
+          <li>
+            <span class="contact-icon">🕐</span>
+            <div>
+              <strong>Horaires</strong>
+              <p>Lun – Ven : 9 h – 18 h</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="contact-social">
+          <h3>Suivez-nous</h3>
+          <div class="social-links">
+            <a href="#" aria-label="Instagram">📸 Instagram</a>
+            <a href="#" aria-label="YouTube">▶️ YouTube</a>
+            <a href="#" aria-label="Pinterest">📌 Pinterest</a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <script src="../js/components.js"></script>
+  <script>
+    renderNav('contact', '../');
+    renderFooter('../');
+
+    // ===== VALIDATION DU FORMULAIRE =====
+    const form = document.getElementById('contactForm');
+    const successDiv = document.getElementById('formSuccess');
+
+    function showError(id, msg) {
+      const el = document.getElementById(id + 'Error');
+      if (el) { el.textContent = msg; el.classList.toggle('visible', !!msg); }
+      const field = document.getElementById(id);
+      if (field) field.classList.toggle('invalid', !!msg);
+    }
+
+    async function validateEmail(email) {
+      const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailReg.test(email)) return false;
+
+      const [localPart, domain] = email.split('@');
+      
+      // Vérifications de la partie locale
+      if (localPart.includes('+')) return false;
+      if (localPart.length < 2 || localPart.length > 64) return false;
+      if (localPart.startsWith('.') || localPart.endsWith('.')) return false;
+      if (localPart.includes('..')) return false;
+
+      // Domaines jetables
+      const disposableDomains = ['tempmail.com', 'guerrillamail.com', 'mailinator.com', '10minutemail.com', 'throwaway.email'];
+      if (disposableDomains.includes(domain)) return false;
+
+      // Vérification DNS MX
+      try {
+        const response = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+        const data = await response.json();
+        return data.Status === 0 && data.Answer && data.Answer.length > 0;
+      } catch {
+        return true;
+      }
+    }
+
+    async function validateForm() {
+      let valid = true;
+
+      const nom = document.getElementById('nom');
+      if (!nom.value.trim()) {
+        showError('nom', 'Le nom est requis.'); valid = false;
+      } else { showError('nom', ''); }
+
+      const email = document.getElementById('email');
+      if (!email.value.trim()) {
+        showError('email', 'L\'adresse e-mail est requise.'); valid = false;
+      } else if (!(await validateEmail(email.value))) {
+        showError('email', 'Cette adresse e-mail semble invalide ou le domaine n\'existe pas.'); valid = false;
+      } else { showError('email', ''); }
+
+      const sujet = document.getElementById('sujet');
+      if (!sujet.value) {
+        showError('sujet', 'Veuillez choisir un sujet.'); valid = false;
+      } else { showError('sujet', ''); }
+
+      const message = document.getElementById('message');
+      if (!message.value.trim() || message.value.trim().length < 10) {
+        showError('message', 'Le message doit contenir au moins 10 caractères.'); valid = false;
+      } else { showError('message', ''); }
+
+      const rgpd = document.getElementById('rgpd');
+      if (!rgpd.checked) {
+        showError('rgpd', 'Veuillez accepter la politique de confidentialité.'); valid = false;
+      } else { showError('rgpd', ''); }
+
+      return valid;
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!(await validateForm())) return;
+
+      // Simuler l'envoi (pas de backend)
+      form.classList.add('hidden');
+      successDiv.classList.remove('hidden');
+    });
+
+    document.getElementById('newMessage').addEventListener('click', () => {
+      form.reset();
+      form.classList.remove('hidden');
+      successDiv.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

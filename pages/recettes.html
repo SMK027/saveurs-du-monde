@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saveurs du Monde – Recettes</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <div id="siteHeader"></div>
+
+  <!-- ===== BARRE DE RECHERCHE + FILTRES ===== -->
+  <div class="filter-bar">
+    <div class="filter-bar-inner">
+
+      <!-- Barre de recherche -->
+      <div class="search-wrapper">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Rechercher une recette…"
+          autocomplete="off"
+        />
+        <button id="searchBtn" aria-label="Rechercher">🔍</button>
+      </div>
+
+      <!-- Menus déroulants -->
+      <ul class="nav-list">
+
+        <li class="nav-item">
+          <button class="nav-btn">Catégories ▾</button>
+          <ul class="dropdown">
+            <li><a href="#" data-filter="categorie" data-value="all">Toutes</a></li>
+            <li><a href="#" data-filter="categorie" data-value="Entrée">Entrées</a></li>
+            <li><a href="#" data-filter="categorie" data-value="Plat principal">Plats principaux</a></li>
+            <li><a href="#" data-filter="categorie" data-value="Dessert">Desserts</a></li>
+            <li><a href="#" data-filter="categorie" data-value="Boisson">Boissons</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-btn">Cuisine ▾</button>
+          <ul class="dropdown">
+            <li><a href="#" data-filter="cuisine" data-value="all">Toutes</a></li>
+            <li><a href="#" data-filter="cuisine" data-value="Française">Française</a></li>
+            <li><a href="#" data-filter="cuisine" data-value="Italienne">Italienne</a></li>
+            <li><a href="#" data-filter="cuisine" data-value="Asiatique">Asiatique</a></li>
+            <li><a href="#" data-filter="cuisine" data-value="Mexicaine">Mexicaine</a></li>
+            <li><a href="#" data-filter="cuisine" data-value="Américaine">Américaine</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-btn">Difficulté ▾</button>
+          <ul class="dropdown">
+            <li><a href="#" data-filter="difficulte" data-value="all">Toutes</a></li>
+            <li><a href="#" data-filter="difficulte" data-value="Facile">Facile</a></li>
+            <li><a href="#" data-filter="difficulte" data-value="Moyen">Moyen</a></li>
+            <li><a href="#" data-filter="difficulte" data-value="Difficile">Difficile</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-btn">Temps ▾</button>
+          <ul class="dropdown">
+            <li><a href="#" data-filter="temps" data-value="all">Tous</a></li>
+            <li><a href="#" data-filter="temps" data-value="rapide">Moins de 30 min</a></li>
+            <li><a href="#" data-filter="temps" data-value="moyen">30 – 60 min</a></li>
+            <li><a href="#" data-filter="temps" data-value="long">Plus d'1 heure</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-btn">Saison ▾</button>
+          <ul class="dropdown">
+            <li><a href="#" data-filter="saison" data-value="all">Toutes</a></li>
+            <li><a href="#" data-filter="saison" data-value="Printemps">🌸 Printemps</a></li>
+            <li><a href="#" data-filter="saison" data-value="Été">☀️ Été</a></li>
+            <li><a href="#" data-filter="saison" data-value="Automne">🍂 Automne</a></li>
+            <li><a href="#" data-filter="saison" data-value="Hiver">❄️ Hiver</a></li>
+            <li><a href="#" data-filter="saison" data-value="Toutes saisons">🌍 Toutes saisons</a></li>
+          </ul>
+        </li>
+
+      </ul>
+
+      <!-- Boutique Secrète -->
+      <button id="secretShopBtn" class="secret-shop-btn" onclick="toggleSecretShop()" aria-pressed="false">
+        🔒 Boutique Secrète
+      </button>
+
+    </div>
+
+    <!-- Tags filtres actifs -->
+    <div class="filter-bar-inner"><div id="activeFilters"></div></div>
+  </div>
+
+  <!-- ===== CONTENU PRINCIPAL ===== -->
+  <main>
+    <p id="resultsCount"></p>
+    <div id="recipeGrid" class="recipe-grid"></div>
+    <p id="noResults" class="no-results hidden">Aucune recette ne correspond à votre recherche. 😕</p>
+  </main>
+
+  <!-- ===== MODAL DÉTAIL RECETTE ===== -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
+      <img id="modalImg" src="" alt="" />
+      <div class="modal-body">
+        <div class="modal-tags" id="modalTags"></div>
+        <h2 id="modalTitle"></h2>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div id="modalAllergenes"></div>
+        <!-- Avertissement boutique secrète -->
+        <div id="modalSecretWarning" class="modal-secret-warning hidden" role="alert">
+          <span class="modal-secret-warning-icon">🔮</span>
+          <div>
+            <strong>Mode Boutique Secrète activé</strong>
+            <p>Les ingrédients et étapes marqués en violet sont entièrement fictifs. Ils ne doivent surtout pas être mis en pratique.
+            Ce mode est uniquement là pour le fun !</p>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3>Ingrédients</h3>
+          <ul id="modalIngredients"></ul>
+        </div>
+        <div class="modal-section">
+          <h3>Préparation</h3>
+          <ol id="modalSteps"></ol>
+        </div>
+        <div class="modal-footer">
+          <a id="modalDetailsBtn" href="#" class="btn btn-primary">Voir la recette complète →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODALE MOT DE PASSE BOUTIQUE SECRÈTE ===== -->
+  <div id="secretPasswordOverlay" class="sp-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="spTitle">
+    <div class="sp-card">
+      <button class="sp-close" onclick="closeSecretPasswordModal()" aria-label="Fermer">✕</button>
+      <div class="sp-icon">🔮</div>
+      <h2 class="sp-title" id="spTitle">Boutique Secrète</h2>
+      <p class="sp-desc">Cette section est réservée. Entrez le mot de passe pour continuer.</p>
+      <div class="sp-input-wrap">
+        <input
+          type="password"
+          id="secretPasswordInput"
+          class="sp-input"
+          placeholder="Mot de passe…"
+          autocomplete="off"
+          maxlength="64"
+        />
+        <button class="sp-submit btn btn-primary" onclick="submitSecretPassword()">
+          Entrer →
+        </button>
+      </div>
+      <p id="secretPasswordError" class="sp-error hidden">Mot de passe incorrect ❌</p>
+    </div>
+  </div>
+
+  <div id="siteFooter"></div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/script.js"></script>
+  <script>
+    renderNav('recettes', '../');
+    renderFooter('../');
+
+    // Lire les paramètres URL ?categorie=... ou ?cuisine=...
+    const params = new URLSearchParams(window.location.search);
+    const urlCat = params.get('categorie');
+    const urlCui = params.get('cuisine');
+
+    if (urlCat) {
+      state.filters.categorie = urlCat;
+      const link = document.querySelector(`[data-filter="categorie"][data-value="${CSS.escape(urlCat)}"]`);
+      if (link) link.classList.add('active-filter');
+    }
+    if (urlCui) {
+      state.filters.cuisine = urlCui;
+      const link = document.querySelector(`[data-filter="cuisine"][data-value="${CSS.escape(urlCui)}"]`);
+      if (link) link.classList.add('active-filter');
+    }
+
+    const urlSaison = params.get('saison');
+    if (urlSaison) {
+      state.filters.saison = urlSaison;
+      const link = document.querySelector(`[data-filter="saison"][data-value="${CSS.escape(urlSaison)}"]`);
+      if (link) link.classList.add('active-filter');
+    }
+
+    applyFilters();
+  </script>
+</body>
+</html>

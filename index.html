@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saveurs du Monde – Accueil</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div id="siteHeader"></div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Bienvenue sur</p>
+      <h1>Saveurs du Monde</h1>
+      <p class="hero-sub">Découvrez des recettes savoureuses pour tous les niveaux, des quatre coins du globe.</p>
+      <div class="hero-actions">
+        <a href="pages/recettes.html" class="btn btn-primary">Explorer les recettes</a>
+        <a href="pages/categories.html" class="btn btn-outline">Parcourir les catégories</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat">
+        <span class="stat-num">25</span>
+        <span class="stat-label">Recettes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Cuisines</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">4</span>
+        <span class="stat-label">Catégories</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Niveaux</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RECETTES VEDETTES ===== -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Recettes vedettes</h2>
+        <a href="pages/recettes.html" class="link-more">Voir toutes →</a>
+      </div>
+      <div id="featuredGrid" class="recipe-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===== CATÉGORIES ===== -->
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Explorer par catégorie</h2>
+        <a href="pages/categories.html" class="link-more">Toutes les catégories →</a>
+      </div>
+      <div class="cat-grid">
+        <a href="pages/recettes.html?categorie=Entrée" class="cat-card">
+          <div class="cat-icon">🥗</div>
+          <h3>Entrées</h3>
+          <p>Légères & savoureuses</p>
+        </a>
+        <a href="pages/recettes.html?categorie=Plat principal" class="cat-card">
+          <div class="cat-icon">🍲</div>
+          <h3>Plats principaux</h3>
+          <p>Le cœur du repas</p>
+        </a>
+        <a href="pages/recettes.html?categorie=Dessert" class="cat-card">
+          <div class="cat-icon">🍰</div>
+          <h3>Desserts</h3>
+          <p>Pour finir en douceur</p>
+        </a>
+        <a href="pages/recettes.html?categorie=Boisson" class="cat-card">
+          <div class="cat-icon">🥤</div>
+          <h3>Boissons</h3>
+          <p>Fraîches & originales</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BANNIÈRE CTA ===== -->
+  <section class="cta-banner">
+    <div class="cta-inner">
+      <h2>Une idée de recette ?</h2>
+      <p>Partagez vos suggestions ou posez-nous vos questions.</p>
+      <a href="pages/contact.html" class="btn btn-primary">Nous contacter</a>
+    </div>
+  </section>
+
+  <!-- ===== MODAL ===== -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Fermer">✕</button>
+      <img id="modalImg" src="" alt="" />
+      <div class="modal-body">
+        <div class="modal-tags" id="modalTags"></div>
+        <h2 id="modalTitle"></h2>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-section">
+          <h3>Ingrédients</h3>
+          <ul id="modalIngredients"></ul>
+        </div>
+        <div class="modal-section">
+          <h3>Préparation</h3>
+          <ol id="modalSteps"></ol>
+        </div>
+        <div class="modal-footer">
+          <a id="modalDetailsBtn" href="#" class="btn btn-primary">Voir la recette complète →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="siteFooter"></div>
+
+  <script src="js/components.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    renderNav('index', '');
+    renderFooter('');
+
+    // Afficher 3 recettes vedettes sur la page d'accueil
+    const featured = [0, 4, 6]; // indices dans RECIPES
+    const grid = document.getElementById('featuredGrid');
+    featured.forEach(i => {
+      const r = RECIPES[i];
+      if (!r) return;
+      const card = document.createElement('article');
+      card.className = 'recipe-card';
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.innerHTML = `
+        <img src="${r.image}" alt="${r.titre}" loading="lazy" />
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-categorie">${r.categorie}</span>
+            <span class="tag tag-cuisine">${r.cuisine}</span>
+            <span class="tag tag-difficulte ${r.difficulte.toLowerCase()}">${r.difficulte}</span>
+          </div>
+          <h2 class="card-title">${r.titre}</h2>
+          <div class="card-meta">
+            <span>⏱ ${r.temps < 60 ? r.temps + ' min' : Math.floor(r.temps/60) + ' h' + (r.temps%60 ? ' '+(r.temps%60)+' min' : '')}</span>
+            <span>👤 ${r.portions} pers.</span>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => openModal(r));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(r); });
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
+

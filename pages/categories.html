@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saveurs du Monde – Catégories</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <div id="siteHeader"></div>
+
+  <!-- ===== EN-TÊTE DE PAGE ===== -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <h1>Catégories</h1>
+      <p>Choisissez une catégorie pour découvrir les recettes qui s'y rapportent.</p>
+    </div>
+  </div>
+
+  <!-- ===== GRILLE DES CATÉGORIES ===== -->
+  <main class="section">
+    <div class="section-inner">
+      <div class="cat-grid-full">
+
+        <a href="recettes.html?categorie=Entrée" class="cat-card-full">
+          <div class="cat-card-img" style="background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80')">
+            <div class="cat-card-overlay"></div>
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-icon">🥗</div>
+            <h2>Entrées</h2>
+            <p>5 recettes</p>
+            <p class="cat-card-desc">Soupes, verrines, salades composées… Ouvrez l'appétit avec légèreté.</p>
+            <span class="btn btn-sm">Voir les recettes →</span>
+          </div>
+        </a>
+
+        <a href="recettes.html?categorie=Plat principal" class="cat-card-full">
+          <div class="cat-card-img" style="background-image: url('https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80')">
+            <div class="cat-card-overlay"></div>
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-icon">🍲</div>
+            <h2>Plats principaux</h2>
+            <p>11 recettes</p>
+            <p class="cat-card-desc">Pâtes, tajines, woks, pizzas… Le meilleur de la cuisine du monde.</p>
+            <span class="btn btn-sm">Voir les recettes →</span>
+          </div>
+        </a>
+
+        <a href="recettes.html?categorie=Dessert" class="cat-card-full">
+          <div class="cat-card-img" style="background-image: url('https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&q=80')">
+            <div class="cat-card-overlay"></div>
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-icon">🍰</div>
+            <h2>Desserts</h2>
+            <p>6 recettes</p>
+            <p class="cat-card-desc">Tiramisu, crème brûlée, pancakes… Finissez en beauté.</p>
+            <span class="btn btn-sm">Voir les recettes →</span>
+          </div>
+        </a>
+
+        <a href="recettes.html?categorie=Boisson" class="cat-card-full">
+          <div class="cat-card-img" style="background-image: url('https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=800&q=80')">
+            <div class="cat-card-overlay"></div>
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-icon">🥤</div>
+            <h2>Boissons</h2>
+            <p>2 recettes</p>
+            <p class="cat-card-desc">Limonades, sirops maison, smoothies… L'hydratation avec style.</p>
+            <span class="btn btn-sm">Voir les recettes →</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== SECTION CUISINES ===== -->
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Cuisines du monde</h2>
+      </div>
+      <div class="cuisine-grid">
+        <a href="recettes.html?cuisine=Française"   class="cuisine-card">🥖<span>Française</span></a>
+        <a href="recettes.html?cuisine=Italienne"   class="cuisine-card">🍕<span>Italienne</span></a>
+        <a href="recettes.html?cuisine=Asiatique"   class="cuisine-card">🍜<span>Asiatique</span></a>
+        <a href="recettes.html?cuisine=Mexicaine"   class="cuisine-card">🌮<span>Mexicaine</span></a>
+        <a href="recettes.html?cuisine=Américaine"  class="cuisine-card">🥞<span>Américaine</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION SAISONS ===== -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Recettes par saison</h2>
+      </div>
+      <div class="cuisine-grid">
+        <a href="recettes.html?saison=Printemps" class="cuisine-card">🌸<span>Printemps</span></a>
+        <a href="recettes.html?saison=Été"       class="cuisine-card">☀️<span>Été</span></a>
+        <a href="recettes.html?saison=Automne"    class="cuisine-card">🍂<span>Automne</span></a>
+        <a href="recettes.html?saison=Hiver"      class="cuisine-card">❄️<span>Hiver</span></a>
+        <a href="recettes.html?saison=Toutes saisons" class="cuisine-card">🌍<span>Toutes saisons</span></a>
+      </div>
+    </div>
+  </section>
+
+  <div id="siteFooter"></div>
+
+  <script src="../js/components.js"></script>
+  <script>
+    renderNav('categories', '../');
+    renderFooter('../');
+  </script>
+</body>
+</html>

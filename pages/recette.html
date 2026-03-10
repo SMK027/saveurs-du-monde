@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recette – Saveurs du Monde</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <div id="siteHeader"></div>
+
+  <main id="recetteDetail" class="recette-detail-page">
+    <!-- Contenu injecté par JavaScript -->
+    <div class="rd-loading">Chargement de la recette…</div>
+  </main>
+
+  <div id="siteFooter"></div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/script.js"></script>
+  <script>
+    renderNav('recettes', '../');
+    renderFooter('../');
+
+    /* ── Retrait physique du header/footer site pendant l'impression ──
+       display:none ne suffit pas : Chromium les inclut quand même
+       dans le calcul de hauteur, générant une page vide. */
+    (function () {
+      const siteHeader = document.getElementById('siteHeader');
+      const siteFooter = document.getElementById('siteFooter');
+      let headerPlaceholder, footerPlaceholder;
+
+      window.addEventListener('beforeprint', function () {
+        headerPlaceholder = document.createComment('siteHeader-removed');
+        footerPlaceholder = document.createComment('siteFooter-removed');
+        siteHeader.replaceWith(headerPlaceholder);
+        siteFooter.replaceWith(footerPlaceholder);
+      });
+
+      window.addEventListener('afterprint', function () {
+        if (headerPlaceholder) headerPlaceholder.replaceWith(siteHeader);
+        if (footerPlaceholder) footerPlaceholder.replaceWith(siteFooter);
+      });
+    })();
+
+    /* ── Lecture du paramètre ?id= ── */
+    const params  = new URLSearchParams(window.location.search);
+    const recipeId = parseInt(params.get('id'), 10);
+    const recipe   = (typeof RECIPES !== 'undefined') ? RECIPES.find(r => r.id === recipeId) : null;
+
+    const main = document.getElementById('recetteDetail');
+
+    if (!recipe) {
+      main.innerHTML = `
+        <div class="rd-not-found">
+          <p>Recette introuvable.</p>
+          <a href="recettes.html" class="btn btn-primary">Voir toutes les recettes</a>
+        </div>`;
+      document.title = 'Recette introuvable – Saveurs du Monde';
+    } else {
+      document.title = `${recipe.titre} – Saveurs du Monde`;
+
+      /* Difficultés → classe CSS */
+      const diffClass = { 'Facile': 'Facile', 'Moyen': 'Moyen', 'Difficile': 'Difficile' };
+      const saisonClass = { 'Printemps': 'saison-printemps', 'Été': 'saison-ete', 'Automne': 'saison-automne', 'Hiver': 'saison-hiver', 'Toutes saisons': 'saison-toutes' };
+
+      /* Formatage du temps */
+      function fmt(min) {
+        if (min < 60) return `${min} min`;
+        const h = Math.floor(min / 60), m = min % 60;
+        return m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`;
+      }
+
+      /* Extraction de la quantité numérique en début d'ingrédient */
+      function parseIngParts(ing) {
+        const str = ing
+          .replace(/½/g, '0.5').replace(/¼/g, '0.25')
+          .replace(/¾/g, '0.75').replace(/⅓/g, '0.333').replace(/⅔/g, '0.667');
+        const m = str.match(/^(\d+(?:[.,]\d+)?)\s+(.+)/);
+        if (!m) return null;
+        return { qty: parseFloat(m[1].replace(',', '.')), rest: m[2] };
+      }
+
+      /* Formatage d'une quantité scalée */
+      function formatQty(n) {
+        if (n === Math.floor(n)) return String(Math.floor(n));
+        const r = Math.round(n * 10) / 10;
+        return r % 1 === 0 ? String(r) : r.toFixed(1).replace('.', ',');
+      }
+
+      /* ── Bloc vidéo ── */
+      const videoBlock = recipe.video ? `
+        <section class="rd-section rd-video-section">
+          <h2 class="rd-section-title">🎬 Vidéo de la recette</h2>
+          <div class="rd-video-wrapper">
+            <iframe
+              src="${recipe.video}?rel=0&modestbranding=1"
+              title="Vidéo : ${recipe.titre}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </section>` : '';
+
+      /* ── Rendu complet ── */
+      main.innerHTML = `
+        <!-- Hero -->
+        <div class="rd-hero" style="background-image: url('${recipe.image}')">
+          <div class="rd-hero-overlay">
+            <div class="rd-hero-inner">
+              <a href="recettes.html" class="rd-back">← Toutes les recettes</a>
+              <div class="rd-tags">
+                <span class="tag tag-categorie">${recipe.categorie}</span>
+                <span class="tag tag-cuisine">${recipe.cuisine}</span>
+                <span class="tag tag-difficulte ${diffClass[recipe.difficulte] || ''}">${recipe.difficulte}</span>
+                <span class="tag tag-saison ${saisonClass[recipe.saison] || ''}">${recipe.saison}</span>
+              </div>
+              <h1 class="rd-title">${recipe.titre}</h1>
+              <div class="rd-meta">
+                <span>⏱ ${fmt(recipe.temps)}</span>
+                <span id="rdMetaPortions">👤 ${recipe.portions} personne${recipe.portions > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="rd-content">
+
+          <!-- Colonne principale -->
+          <div class="rd-main-col">
+
+            ${videoBlock}
+
+            ${recipe.allergenes && recipe.allergenes.length > 0 ? `
+            <div class="rd-allergenes-warning">
+              <div class="rd-allergenes-icon">⚠️</div>
+              <div class="rd-allergenes-body">
+                <strong>Allergènes présents</strong>
+                <p>${recipe.allergenes.join(', ')}</p>
+              </div>
+            </div>` : ''}
+
+            ${secretShopMode ? `
+            <div class="rd-secret-banner" role="alert">
+              <span class="rd-secret-banner-icon">🔮</span>
+              <div>
+                <strong>Mode Boutique Secrète activé</strong>
+                <p>Les ingrédients et étapes marqués en violet sont entièrement fictifs.
+                Ils n’ont aucune existence réelle et ne doivent surtout pas être mis en pratique.
+                Ce mode est uniquement là pour le fun !</p>
+              </div>
+            </div>` : ''}
+
+            <section class="rd-section">
+              <h2 class="rd-section-title">📋 Ingrédients</h2>
+              <p class="rd-ing-note">Les coûts s'ajustent selon le nombre de personnes.</p>
+              <ul class="rd-ingredients">
+                ${(() => {
+                  const allIngs = getEnhancedIngredients(recipe.ingredients);
+                  const secretStart = recipe.ingredients.length;
+                  return allIngs.map((ing, i) => {
+                    const isSecret = i >= secretStart;
+                    const prix = !isSecret && recipe.prixIngredients && recipe.prixIngredients[i] != null
+                      ? recipe.prixIngredients[i] : null;
+                    const parts = parseIngParts(ing);
+                    const dataAttrs = !isSecret && parts
+                      ? ` data-qty="${parts.qty}" data-rest="${parts.rest.replace(/"/g, '&quot;')}"`
+                      : '';
+                    return `<li${isSecret ? ' class="secret-item"' : ''}>
+                      <span class="ing-nom"${dataAttrs}>${ing}</span>
+                      ${!isSecret && prix !== null && prix > 0
+                        ? `<span class="ing-prix" data-base="${prix}">-</span>`
+                        : `<span class="ing-prix ing-inclus">${isSecret ? '🔮 fictif' : 'inclus'}</span>`}
+                    </li>`;
+                  }).join('');
+                })()}
+              </ul>
+              <div class="rd-ing-total">
+                <span>Total ingrédients</span>
+                <span id="ingTotal">-</span>
+              </div>
+            </section>
+
+            <section class="rd-section">
+              <h2 class="rd-section-title">👨‍🍳 Préparation</h2>
+              <ol class="rd-steps">
+                ${(() => {
+                  const allSteps = getEnhancedSteps(recipe.etapes);
+                  const secretStart = recipe.etapes.length;
+                  return allSteps.map((s, i) =>
+                    `<li${i >= secretStart ? ' class="secret-item"' : ''}><span class="rd-step-text">${s}</span></li>`
+                  ).join('');
+                })()}
+              </ol>
+            </section>
+
+          </div>
+
+          <!-- Sidebar récapitulatif -->
+          <aside class="rd-sidebar">
+            <div class="rd-info-card">
+              <h3>Infos rapides</h3>
+              <dl>
+                <dt>Catégorie</dt><dd>${recipe.categorie}</dd>
+                <dt>Cuisine</dt><dd>${recipe.cuisine}</dd>
+                <dt>Difficulté</dt><dd>${recipe.difficulte}</dd>
+                <dt>Saison</dt><dd>${recipe.saison}</dd>
+                <dt>Temps total</dt><dd>${fmt(recipe.temps)}</dd>
+                <dt>Portions</dt><dd>${recipe.portions} personnes</dd>
+              </dl>
+            </div>
+
+            <!-- Simulateur de prix -->
+            <div class="rd-prix-card" id="prixSimulateur">
+              <h3>💶 Simulateur de coût</h3>
+              <p class="rd-prix-note">Estimation indicative des ingrédients bruts.</p>
+              <div class="rd-prix-control">
+                <label for="nbPersonnes">Nombre de personnes</label>
+                <div class="rd-prix-stepper">
+                  <button type="button" id="btnMoins" aria-label="Diminuer">−</button>
+                  <input type="number" id="nbPersonnes" min="1" max="50" value="${recipe.portions}" />
+                  <button type="button" id="btnPlus" aria-label="Augmenter">+</button>
+                </div>
+                <input type="range" id="nbPersonnesSlider" min="1" max="50"
+                       value="${recipe.portions}" aria-label="Curseur nombre de personnes" />
+              </div>
+              <div class="rd-prix-result">
+                <div class="rd-prix-total">
+                  <span class="rd-prix-label">Coût total estimé</span>
+                  <span class="rd-prix-amount" id="prixTotal">-</span>
+                </div>
+                <div class="rd-prix-pp">
+                  <span class="rd-prix-label">Par personne</span>
+                  <span class="rd-prix-amount-sm" id="prixPP">-</span>
+                </div>
+                <div class="rd-prix-budget" id="prixBudget"></div>
+              </div>
+            </div>
+
+            <a href="recettes.html" class="btn btn-outline rd-btn-back">← Toutes les recettes</a>
+            <button onclick="window.print()" class="btn rd-btn-pdf" aria-label="Exporter en PDF">
+              🖨️ Exporter en PDF
+            </button>
+          </aside>
+
+        </div>
+      `;
+
+      /* ── Simulateur de prix ── */
+      (function () {
+        const basePortions = recipe.portions;
+        const prixIng      = recipe.prixIngredients || [];
+        const nbInput      = document.getElementById('nbPersonnes');
+        const slider       = document.getElementById('nbPersonnesSlider');
+        const totalEl      = document.getElementById('prixTotal');
+        const ppEl         = document.getElementById('prixPP');
+        const budgetEl     = document.getElementById('prixBudget');
+        const ingTotalEl   = document.getElementById('ingTotal');
+        const ingPrixEls   = document.querySelectorAll('.ing-prix[data-base]');
+
+        if (!nbInput || prixIng.length === 0) {
+          /* Pas de simulateur de prix, mais on scale quand même les quantités à l'impression */
+          function updateQtyOnly() {
+            const n = nbInput ? Math.max(1, Math.min(50, parseInt(nbInput.value, 10) || 1)) : recipe.portions;
+            const ratio = n / recipe.portions;
+            document.querySelectorAll('.ing-nom[data-qty]').forEach(el => {
+              const baseQty = parseFloat(el.dataset.qty);
+              el.textContent = formatQty(baseQty * ratio) + '\u00a0' + el.dataset.rest;
+            });
+          }
+          window.addEventListener('beforeprint', updateQtyOnly);
+          return;
+        }
+
+        const baseTotal = prixIng.reduce((s, p) => s + p, 0);
+
+        function fmt2(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
+
+        function budgetInfo(pp) {
+          if (pp < 2.50) return { label: 'Économique',   cls: 'budget-eco' };
+          if (pp < 5.00) return { label: 'Raisonnable',  cls: 'budget-mid' };
+          return               { label: 'Gastronomique', cls: 'budget-haut' };
+        }
+
+        function update() {
+          const n      = Math.max(1, Math.min(50, parseInt(nbInput.value, 10) || 1));
+          const ratio  = n / basePortions;
+          const total  = baseTotal * ratio;
+          const pp     = total / n;
+          const info   = budgetInfo(pp);
+
+          /* Mise à jour des quantités de chaque ingrédient */
+          document.querySelectorAll('.ing-nom[data-qty]').forEach(el => {
+            const baseQty = parseFloat(el.dataset.qty);
+            el.textContent = formatQty(baseQty * ratio) + '\u00a0' + el.dataset.rest;
+          });
+
+          /* Mise à jour du prix de chaque ligne d'ingrédient */
+          ingPrixEls.forEach(el => {
+            const base = parseFloat(el.dataset.base);
+            el.textContent = fmt2(base * ratio);
+          });
+
+          /* Totaux dans la section ingrédients */
+          if (ingTotalEl) ingTotalEl.textContent = fmt2(total);
+
+          /* Simulateur sidebar */
+          totalEl.textContent = fmt2(total);
+          ppEl.textContent    = fmt2(pp);
+          budgetEl.className  = 'rd-prix-budget ' + info.cls;
+          budgetEl.textContent = info.label;
+
+          /* Mise à jour du nombre de personnes dans le hero */
+          const rdMetaPortions = document.getElementById('rdMetaPortions');
+          if (rdMetaPortions) rdMetaPortions.textContent = `👤 ${n} personne${n > 1 ? 's' : ''}`;
+
+          slider.value = n;
+
+          /* État des boutons stepper */
+          btnMoins.disabled = (n <= 1);
+          btnPlus.disabled  = (n >= 50);
+        }
+
+        const btnMoins = document.getElementById('btnMoins');
+        const btnPlus  = document.getElementById('btnPlus');
+
+        nbInput.addEventListener('input', update);
+        slider.addEventListener('input', () => { nbInput.value = slider.value; update(); });
+        btnMoins.addEventListener('click', () => {
+          nbInput.value = Math.max(1, (parseInt(nbInput.value, 10) || 1) - 1); update();
+        });
+        btnPlus.addEventListener('click', () => {
+          nbInput.value = Math.min(50, (parseInt(nbInput.value, 10) || 1) + 1); update();
+        });
+
+        /* ── Impression : injection du header/footer brandés dans <main> ── */
+        (function () {
+          const mainEl = document.getElementById('recetteDetail');
+
+          const headerHTML = `
+            <div id="printHeader" aria-hidden="true">
+              <div class="ph-bar"></div>
+              <div class="ph-inner">
+                <div class="ph-logo">
+                  <span class="ph-logo-icon">🍽️</span>
+                  <span class="ph-logo-text">Saveurs du Monde</span>
+                </div>
+                <span class="ph-tagline">Des recettes du monde entier, pour tous les niveaux.</span>
+              </div>
+            </div>`;
+
+          const footerHTML = `
+            <div id="printFooter" aria-hidden="true">
+              <div class="pf-inner">
+                <span id="pfRecipeTitle">${recipe.titre}</span>
+                <span class="pf-site">saveursdumonde.fr</span>
+              </div>
+              <div class="pf-bar"></div>
+            </div>`;
+
+          window.addEventListener('beforeprint', function () {
+            update();
+            if (!document.getElementById('printHeader')) {
+              mainEl.insertAdjacentHTML('afterbegin', headerHTML);
+            }
+            if (!document.getElementById('printFooter')) {
+              mainEl.insertAdjacentHTML('beforeend', footerHTML);
+            }
+          });
+
+          window.addEventListener('afterprint', function () {
+            const ph = document.getElementById('printHeader');
+            const pf = document.getElementById('printFooter');
+            if (ph) ph.remove();
+            if (pf) pf.remove();
+          });
+        })();
+
+        update();
+      })();
+    }
+  </script>
+</body>
+</html>
