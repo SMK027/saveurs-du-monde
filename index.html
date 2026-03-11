@@ -16,7 +16,6 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Saveurs du Monde | Recettes du monde faciles et gourmandes" />
   <meta name="twitter:description" content="Des recettes du monde entier pour tous les niveaux." />
-  <link rel="alternate" type="application/ld+json" href="schema.json" />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -31,10 +30,10 @@
       }
     }
   </script>
-  <link rel="preconnect" href="https://images.unsplash.com" />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
   <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
   <style>
-    :root { --primary: #e07b39; --dark: #1e1e1e; --light: #faf7f2; --text: #333; --shadow: 0 4px 18px rgba(0,0,0,.1); }
+    :root { --primary: #e07b39; --dark: #1e1e1e; --light: #faf7f2; --text: #333; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
@@ -45,23 +44,24 @@
     .btn-primary:hover { background: #c4622a; }
     .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
     .btn-outline:hover { background: var(--primary); color: #fff; }
-    .hero { position: relative; min-height: 340px; background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80') center/cover no-repeat; display: flex; align-items: center; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30,30,30,.78) 0%, rgba(224,123,57,.55) 100%); }
-    .hero-content { position: relative; max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; color: #fff; }
-    .hero-content h1 { font-size: clamp(2rem, 6vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    /* Hero – image LCP positionnée en <img> pour fetchpriority */
+    .hero { position: relative; min-height: 340px; overflow: hidden; background: #1e1e1e; display: flex; align-items: center; }
+    .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 0; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30,30,30,.78) 0%, rgba(224,123,57,.55) 100%); z-index: 1; }
+    .hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; color: #fff; }
+    .hero-content h1 { font-size: clamp(1.8rem, 6vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
     .hero-sub { font-size: 1rem; opacity: .9; max-width: 520px; line-height: 1.6; margin-bottom: 1.5rem; }
     .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
     @media (max-width: 700px) {
-      .hero { min-height: 340px; }
-      .hero-content { padding: 2rem 1.5rem; }
       .hero-content h1 { font-size: 1.8rem; }
-      .hero-sub { font-size: 1rem; }
       .hero-actions { flex-direction: column; }
       .hero-actions .btn { width: 100%; justify-content: center; }
       body { font-size: 14px; }
     }
   </style>
-  <link rel="stylesheet" href="css/style.css" media="screen" />
+  <!-- CSS non-bloquant : le CSS critique ci-dessus couvre le above-the-fold -->
+  <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/style.css" /></noscript>
 </head>
 <body>
 
@@ -70,6 +70,18 @@
   <main>
   <!-- ===== HERO ===== -->
   <section class="hero">
+    <!-- Image LCP : balise <img> native pour fetchpriority="high" + srcset responsive -->
+    <img
+      class="hero-bg"
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=75"
+      srcset="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=480&q=70 480w,
+              https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=75 800w,
+              https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80 1400w"
+      sizes="100vw"
+      alt=""
+      fetchpriority="high"
+      decoding="async"
+    />
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Bienvenue sur</p>
