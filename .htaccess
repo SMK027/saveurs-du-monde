@@ -1,0 +1,86 @@
+# ================================================================
+# OPTIMISATION PERFORMANCE – Headers et Compression
+# ================================================================
+
+# Activer la compression gzip
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/ld+json
+</IfModule>
+
+# ================================================================
+# HEADERS DE CACHE
+# ================================================================
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  
+  # Images – 1 an
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  
+  # CSS et JavaScript – 30 jours
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType text/javascript "access plus 30 days"
+  
+  # Fonts – 1 an
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  
+  # Fichiers HTML – 1 jour (récupération régulière pour les mises à jour)
+  ExpiresByType text/html "access plus 1 days"
+  
+  # JSON-LD et schema – 7 jours
+  ExpiresByType application/ld+json "access plus 7 days"
+</IfModule>
+
+# Headers de cache supplémentaires
+<IfModule mod_headers.c>
+  # Images
+  <FilesMatch "\.(jpg|jpeg|png|gif|ico|webp|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  
+  # CSS et JS
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=2592000, must-revalidate"
+  </FilesMatch>
+  
+  # Fonts
+  <FilesMatch "\.(woff|woff2|ttf|otf)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+  
+  # HTML (always check for updates)
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ================================================================
+# OPTIMISATIONS SUPPLÉMENTAIRES
+# ================================================================
+
+# Désactiver ETags (simplifie la mise en cache)
+<IfModule mod_headers.c>
+  Header unset ETag
+</IfModule>
+FileETag None
+
+# Redirection HTTPS (décommenter si votre serveur supporte HTTPS)
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# Désactiver la navigation répertoire
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>

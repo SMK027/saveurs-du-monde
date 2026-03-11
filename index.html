@@ -31,7 +31,37 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
+  <style>
+    :root { --primary: #e07b39; --dark: #1e1e1e; --light: #faf7f2; --text: #333; --shadow: 0 4px 18px rgba(0,0,0,.1); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .65rem 1.4rem; border-radius: 12px; font-size: .95rem; font-weight: 600; cursor: pointer; border: 2px solid transparent; transition: background 150ms ease; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #c4622a; }
+    .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .hero { position: relative; min-height: 340px; background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80') center/cover no-repeat; display: flex; align-items: center; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30,30,30,.78) 0%, rgba(224,123,57,.55) 100%); }
+    .hero-content { position: relative; max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; color: #fff; }
+    .hero-content h1 { font-size: clamp(2rem, 6vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 1rem; }
+    .hero-sub { font-size: 1rem; opacity: .9; max-width: 520px; line-height: 1.6; margin-bottom: 1.5rem; }
+    .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+    @media (max-width: 700px) {
+      .hero { min-height: 340px; }
+      .hero-content { padding: 2rem 1.5rem; }
+      .hero-content h1 { font-size: 1.8rem; }
+      .hero-sub { font-size: 1rem; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      body { font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="css/style.css" media="screen" />
 </head>
 <body>
 
@@ -154,41 +184,44 @@
 
   <div id="siteFooter"></div>
 
-  <script src="js/components.js"></script>
-  <script src="js/script.js"></script>
-  <script>
-    renderNav('index', '');
-    renderFooter('');
+  <script src="js/components.js" defer></script>
+  <script src="js/script.js" defer></script>
+  <script defer>
+    // Optimiser le rendu de la page d'accueil
+    document.addEventListener('DOMContentLoaded', function() {
+      renderNav('index', '');
+      renderFooter('');
 
-    // Afficher 3 recettes vedettes sur la page d'accueil
-    const featured = [0, 4, 6]; // indices dans RECIPES
-    const grid = document.getElementById('featuredGrid');
-    featured.forEach(i => {
-      const r = RECIPES[i];
-      if (!r) return;
-      const card = document.createElement('article');
-      card.className = 'recipe-card';
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.innerHTML = `
-        <img src="${r.image}" alt="${r.titre}" loading="lazy" />
-        <div class="card-body">
-          <div class="card-tags">
-            <span class="tag tag-categorie">${r.categorie}</span>
-            <span class="tag tag-cuisine">${r.cuisine}</span>
-            <span class="tag tag-difficulte ${r.difficulte.toLowerCase()}">${r.difficulte}</span>
+      // Afficher 3 recettes vedettes sur la page d'accueil
+      const featured = [0, 4, 6];
+      const grid = document.getElementById('featuredGrid');
+      featured.forEach(i => {
+        const r = RECIPES[i];
+        if (!r) return;
+        const card = document.createElement('article');
+        card.className = 'recipe-card';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.innerHTML = `
+          <img src="${r.image}" alt="${r.titre}" loading="lazy" width="280" height="200" />
+          <div class="card-body">
+            <div class="card-tags">
+              <span class="tag tag-categorie">${r.categorie}</span>
+              <span class="tag tag-cuisine">${r.cuisine}</span>
+              <span class="tag tag-difficulte ${r.difficulte.toLowerCase()}">${r.difficulte}</span>
+            </div>
+            <h2 class="card-title">${r.titre}</h2>
+            <div class="card-meta">
+              <span>⏱ ${r.temps < 60 ? r.temps + ' min' : Math.floor(r.temps/60) + ' h' + (r.temps%60 ? ' '+(r.temps%60)+' min' : '')}</span>
+              <span>👤 ${r.portions} pers.</span>
+            </div>
           </div>
-          <h2 class="card-title">${r.titre}</h2>
-          <div class="card-meta">
-            <span>⏱ ${r.temps < 60 ? r.temps + ' min' : Math.floor(r.temps/60) + ' h' + (r.temps%60 ? ' '+(r.temps%60)+' min' : '')}</span>
-            <span>👤 ${r.portions} pers.</span>
-          </div>
-        </div>
-      `;
-      card.addEventListener('click', () => openModal(r));
-      card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(r); });
-      grid.appendChild(card);
-    });
+        `;
+        card.addEventListener('click', () => openModal(r));
+        card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(r); });
+        grid.appendChild(card);
+      });
+    }, { once: true });
   </script>
 </body>
 </html>
