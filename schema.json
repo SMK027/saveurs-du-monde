@@ -12,7 +12,7 @@
         "width": 250,
         "height": 250
       },
-      "description": "Un site de recettes du monde faciles et gourmandes pour tous les niveaux. Découvrez des recettes de cuisines du monde: française, italienne, asiatique, mexicaine et américaine.",
+      "description": "Annuaire de recettes du monde faciles et gourmandes, avec recherche, filtres avancés et fiches recettes détaillées.",
       "email": "contact@saveursdumonde.leofranz.fr",
       "telephone": "+33-1-XX-XX-XX-XX",
       "address": {
@@ -20,11 +20,6 @@
         "addressCountry": "FR",
         "addressLocality": "Paris"
       },
-      "sameAs": [
-        "https://www.facebook.com/saveursdumonde",
-        "https://www.instagram.com/saveursdumonde",
-        "https://www.youtube.com/channel/saveursdumonde"
-      ],
       "foundingDate": "2024",
       "contactPoint": {
         "@type": "ContactPoint",
@@ -42,6 +37,7 @@
       "name": "Saveurs du Monde",
       "url": "https://saveursdumonde.leofranz.fr/",
       "inLanguage": "fr-FR",
+      "description": "Site de référencement de recettes de cuisine du monde.",
       "publisher": {
         "@id": "https://saveursdumonde.leofranz.fr/#organization"
       },
@@ -50,6 +46,28 @@
         "target": "https://saveursdumonde.leofranz.fr/pages/recettes.html?search={search_term_string}",
         "query-input": "required name=search_term_string"
       }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://saveursdumonde.leofranz.fr/#homepage",
+      "url": "https://saveursdumonde.leofranz.fr/",
+      "name": "Accueil - Saveurs du Monde",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://saveursdumonde.leofranz.fr/#website"
+      },
+      "about": {
+        "@id": "https://saveursdumonde.leofranz.fr/#recipe-directory"
+      },
+      "mainEntity": {
+        "@id": "https://saveursdumonde.leofranz.fr/#featured-recipes"
+      }
+    },
+    {
+      "@type": "Thing",
+      "@id": "https://saveursdumonde.leofranz.fr/#recipe-directory",
+      "name": "Référencement de recettes de cuisine",
+      "description": "Le site sert uniquement à référencer des recettes de cuisine et à aider les utilisateurs à les trouver via des filtres."
     },
     {
       "@type": "BreadcrumbList",
@@ -82,16 +100,51 @@
       ]
     },
     {
+      "@type": "ItemList",
+      "@id": "https://saveursdumonde.leofranz.fr/#featured-recipes",
+      "name": "Recettes mises en avant",
+      "itemListOrder": "https://schema.org/ItemListOrderAscending",
+      "numberOfItems": 3,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=1"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=5"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=7"
+          }
+        }
+      ]
+    },
+    {
       "@type": "CollectionPage",
       "@id": "https://saveursdumonde.leofranz.fr/pages/recettes.html",
       "name": "Toutes les recettes du monde",
       "url": "https://saveursdumonde.leofranz.fr/pages/recettes.html",
       "inLanguage": "fr-FR",
+      "description": "Page de référencement des recettes avec recherche textuelle et filtres par catégorie, cuisine, difficulté, saison et temps.",
       "isPartOf": {
         "@id": "https://saveursdumonde.leofranz.fr/#website"
       },
+      "about": {
+        "@id": "https://saveursdumonde.leofranz.fr/#recipe-directory"
+      },
       "mainEntity": {
         "@type": "ItemList",
+        "name": "Recettes référencées",
         "itemListElement": [
           {
             "@type": "ListItem",
@@ -107,6 +160,31 @@
             "@type": "ListItem",
             "position": 3,
             "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=3"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=4"
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=5"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=6"
+          },
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=7"
+          },
+          {
+            "@type": "ListItem",
+            "position": 8,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=8"
           }
         ]
       }
@@ -114,48 +192,38 @@
     {
       "@type": "Recipe",
       "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=1",
-      "name": "Pâtes à la Carbonara",
-      "description": "Une délicieuse recette italienne traditionnelle originaire de Rome.",
-      "image": "https://saveursdumonde.leofranz.fr/images/carbonara.jpg",
+      "name": "Ratatouille Provençale",
+      "description": "Recette de ratatouille provençale facile, idéale pour un plat principal végétarien.",
+      "image": "https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=600&q=80",
       "recipeCategory": "Plat Principal",
-      "recipeCuisine": "Italienne",
+      "recipeCuisine": "Française",
       "recipeYield": "4 portions",
-      "prepTime": "PT10M",
-      "cookTime": "PT20M",
-      "totalTime": "PT30M",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "142"
-      },
-      "nutrition": {
-        "@type": "NutritionInformation",
-        "calories": "450 calories"
-      },
+      "totalTime": "PT50M",
       "recipeIngredient": [
-        "400g de pâtes spaghetti",
-        "200g de lard ou pancetta",
-        "4 œufs",
-        "100g de fromage Pecorino Romano",
-        "Poivre noir moulu",
-        "sel"
+        "2 courgettes",
+        "2 aubergines",
+        "4 tomates",
+        "2 poivrons rouges",
+        "1 oignon",
+        "4 gousses d'ail",
+        "4 c. à soupe d'huile d'olive"
       ],
       "recipeInstructions": [
         {
           "@type": "HowToStep",
-          "text": "Faire bouillir l'eau salée et cuire les pâtes al dente."
+          "text": "Couper les légumes puis faire revenir l'oignon et l'ail dans l'huile d'olive."
         },
         {
           "@type": "HowToStep",
-          "text": "Pendant ce temps, couper le lard en petits morceaux et le faire dorer."
+          "text": "Ajouter poivrons, aubergines et courgettes, puis mélanger régulièrement."
         },
         {
           "@type": "HowToStep",
-          "text": "Dans un bol, fouetter les œufs avec le fromage râpé et le poivre."
+          "text": "Incorporer les tomates, les herbes, assaisonner, puis laisser mijoter."
         },
         {
           "@type": "HowToStep",
-          "text": "Égoutter les pâtes et les ajouter au mélange d'œufs."
+          "text": "Servir chaud avec du basilic frais."
         }
       ],
       "author": {
@@ -164,6 +232,45 @@
       },
       "isPartOf": {
         "@id": "https://saveursdumonde.leofranz.fr/#website"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=1"
+      }
+    },
+    {
+      "@type": "Recipe",
+      "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=5",
+      "name": "Pizza Margherita",
+      "description": "Recette de pizza margherita maison avec pâte levée, sauce tomate et mozzarella.",
+      "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&q=80",
+      "recipeCategory": "Plat Principal",
+      "recipeCuisine": "Italienne",
+      "recipeYield": "2 portions",
+      "totalTime": "PT90M",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://saveursdumonde.leofranz.fr/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=5"
+      }
+    },
+    {
+      "@type": "Recipe",
+      "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=7",
+      "name": "Crème Brûlée",
+      "description": "Dessert classique français à la vanille avec fine couche caramélisée.",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Creme_brulee.jpg/800px-Creme_brulee.jpg",
+      "recipeCategory": "Dessert",
+      "recipeCuisine": "Française",
+      "recipeYield": "4 portions",
+      "totalTime": "PT50M",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://saveursdumonde.leofranz.fr/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=7"
       }
     },
     {
@@ -172,10 +279,10 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Comment filtrer les recettes par niveau de difficulté?",
+          "name": "Comment trouver une recette selon mes critères?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Utilisez les filtres disponibles sur la page 'Toutes les recettes' pour trier par difficulté, temps de préparation, cuisine, catégorie et saison."
+            "text": "Utilisez la recherche et les filtres de la page 'Toutes les recettes' pour filtrer par catégorie, cuisine, difficulté, saison et temps de préparation."
           }
         },
         {
@@ -183,7 +290,7 @@
           "name": "Puis-je imprimer une recette?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Oui, sur chaque page de recette, un bouton 'Imprimer' vous permet d'exporter la recette en PDF ou papier."
+            "text": "Oui, chaque fiche recette propose un bouton d'impression permettant un export PDF ou impression papier."
           }
         },
         {
@@ -191,7 +298,7 @@
           "name": "Comment dois-je adapter les portions?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Utilisez le simulateur de prix sur le côté de chaque recette pour ajuster les portions et toutes les quantités d'ingrédients se mettront à jour automatiquement."
+            "text": "Sur chaque recette, utilisez le simulateur de coût pour ajuster le nombre de portions. Les quantités et l'estimation du coût se mettent à jour automatiquement."
           }
         }
       ]
@@ -214,18 +321,6 @@
       "inLanguage": "fr-FR",
       "isPartOf": {
         "@id": "https://saveursdumonde.leofranz.fr/#website"
-      }
-    },
-    {
-      "@type": "AggregateOffer",
-      "@id": "https://saveursdumonde.leofranz.fr/#offer",
-      "name": "Accès aux recettes",
-      "description": "Accès complet à toutes nos recettes du monde gratuit et sans inscription.",
-      "price": "0",
-      "priceCurrency": "EUR",
-      "availability": "https://schema.org/InStock",
-      "seller": {
-        "@id": "https://saveursdumonde.leofranz.fr/#organization"
       }
     }
   ]
