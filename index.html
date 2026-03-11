@@ -30,7 +30,7 @@
       }
     }
   </script>
-  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" />
   <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
   <style>
     :root { --primary: #e07b39; --dark: #1e1e1e; --light: #faf7f2; --text: #333; }
@@ -80,6 +80,19 @@
       .section { padding: 2rem 0; }
       .recipe-grid { grid-template-columns: 1fr; gap: 1.2rem; padding: 0 1rem 2rem; }
     }
+    /* ── Recipe cards : critique pour CLS ─
+       aspect-ratio réservé dès le 1er rendu, avant le CSS externe (non-bloquant) ── */
+    .recipe-card { background: #fff; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 18px rgba(0,0,0,.10); }
+    .recipe-card img { width: 100%; aspect-ratio: 3/2; object-fit: cover; background: #e8e3db; }
+    .card-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; flex: 1; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .6rem; }
+    .tag { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: .2rem .6rem; border-radius: 999px; }
+    .tag-categorie { background: #fde8d8; color: #b85c1a; }
+    .tag-cuisine { background: #d8edfd; color: #1a5cb8; }
+    .tag-difficulte.facile { background: #d8fde8; color: #1ab85c; }
+    .tag-difficulte.moyen { background: #fdfbd8; color: #b8a21a; }
+    .card-title { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; color: #1e1e1e; }
+    .card-meta { display: flex; gap: 1rem; font-size: .82rem; color: #888; margin-top: auto; padding-top: .6rem; border-top: 1px solid #e8e3db; }
   </style>
   <!-- CSS non-bloquant : le CSS critique ci-dessus couvre le above-the-fold -->
   <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'" />
@@ -96,9 +109,9 @@
     <img
       class="hero-bg"
       src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=75"
-      srcset="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=480&q=70 480w,
-              https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=75 800w,
-              https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1400&q=80 1400w"
+            srcset="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=480&q=70 480w,
+              https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=72 800w,
+              https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1100&q=68 1100w"
       sizes="100vw"
       alt=""
       fetchpriority="high"
@@ -145,7 +158,67 @@
         <h2>Nos recommandations</h2>
         <a href="pages/recettes.html" class="link-more">Voir toutes →</a>
       </div>
-      <div id="featuredGrid" class="recipe-grid"></div>
+      <!-- Cartes pré-rendues : pas de layout shift à l'injection JS, aspect-ratio réservé via CSS inline -->
+      <div id="featuredGrid" class="recipe-grid">
+
+        <article class="recipe-card" role="button" tabindex="0" data-recipe-id="1">
+          <img
+            src="https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=360&q=70"
+            srcset="https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=360&q=70 360w,
+                    https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=560&q=75 560w"
+            sizes="(max-width: 600px) calc(100vw - 2rem), 280px"
+            alt="Ratatouille Provençale" loading="lazy" width="280" height="187"
+          />
+          <div class="card-body">
+            <div class="card-tags">
+              <span class="tag tag-categorie">Plat principal</span>
+              <span class="tag tag-cuisine">Française</span>
+              <span class="tag tag-difficulte facile">Facile</span>
+            </div>
+            <h2 class="card-title">Ratatouille Provençale</h2>
+            <div class="card-meta"><span>⏱ 50 min</span><span>👤 4 pers.</span></div>
+          </div>
+        </article>
+
+        <article class="recipe-card" role="button" tabindex="0" data-recipe-id="5">
+          <img
+            src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=360&q=70"
+            srcset="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=360&q=70 360w,
+                    https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=560&q=75 560w"
+            sizes="(max-width: 600px) calc(100vw - 2rem), 280px"
+            alt="Pizza Margherita" loading="lazy" width="280" height="187"
+          />
+          <div class="card-body">
+            <div class="card-tags">
+              <span class="tag tag-categorie">Plat principal</span>
+              <span class="tag tag-cuisine">Italienne</span>
+              <span class="tag tag-difficulte moyen">Moyen</span>
+            </div>
+            <h2 class="card-title">Pizza Margherita</h2>
+            <div class="card-meta"><span>⏱ 1 h 30 min</span><span>👤 2 pers.</span></div>
+          </div>
+        </article>
+
+        <article class="recipe-card" role="button" tabindex="0" data-recipe-id="7">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Creme_brulee.jpg/400px-Creme_brulee.jpg"
+            srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Creme_brulee.jpg/400px-Creme_brulee.jpg 400w,
+                    https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Creme_brulee.jpg/800px-Creme_brulee.jpg 800w"
+            sizes="(max-width: 600px) calc(100vw - 2rem), 280px"
+            alt="Crème Brûlée" loading="lazy" width="280" height="187"
+          />
+          <div class="card-body">
+            <div class="card-tags">
+              <span class="tag tag-categorie">Dessert</span>
+              <span class="tag tag-cuisine">Française</span>
+              <span class="tag tag-difficulte moyen">Moyen</span>
+            </div>
+            <h2 class="card-title">Crème Brûlée</h2>
+            <div class="card-meta"><span>⏱ 50 min</span><span>👤 4 pers.</span></div>
+          </div>
+        </article>
+
+      </div>
     </div>
   </section>
 
@@ -225,44 +298,13 @@
     document.addEventListener('DOMContentLoaded', function() {
       renderNav('index', '');
       renderFooter('');
-
-      // Afficher 3 recettes vedettes sur la page d'accueil
-      const featured = [0, 4, 6];
-      const grid = document.getElementById('featuredGrid');
-      featured.forEach(i => {
-        const r = RECIPES[i];
+      // Cartes déjà en HTML – on attache uniquement les event listeners (modal)
+      document.querySelectorAll('#featuredGrid [data-recipe-id]').forEach(card => {
+        const id = parseInt(card.dataset.recipeId, 10);
+        const r = RECIPES.find(recipe => recipe.id === id);
         if (!r) return;
-        const card = document.createElement('article');
-        card.className = 'recipe-card';
-        card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-        const imgMobile = r.image.replace(/w=\d+/, 'w=360').replace(/q=\d+/, 'q=70');
-        const imgDesktop = r.image.replace(/w=\d+/, 'w=560').replace(/q=\d+/, 'q=75');
-        card.innerHTML = `
-          <img
-            src="${imgMobile}"
-            srcset="${imgMobile} 360w, ${imgDesktop} 560w"
-            sizes="(max-width: 600px) calc(100vw - 2rem), 280px"
-            alt="${r.titre}"
-            loading="lazy"
-            width="280" height="187"
-          />
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag tag-categorie">${r.categorie}</span>
-              <span class="tag tag-cuisine">${r.cuisine}</span>
-              <span class="tag tag-difficulte ${r.difficulte.toLowerCase()}">${r.difficulte}</span>
-            </div>
-            <h2 class="card-title">${r.titre}</h2>
-            <div class="card-meta">
-              <span>⏱ ${r.temps < 60 ? r.temps + ' min' : Math.floor(r.temps/60) + ' h' + (r.temps%60 ? ' '+(r.temps%60)+' min' : '')}</span>
-              <span>👤 ${r.portions} pers.</span>
-            </div>
-          </div>
-        `;
         card.addEventListener('click', () => openModal(r));
         card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(r); });
-        grid.appendChild(card);
       });
     }, { once: true });
   </script>
