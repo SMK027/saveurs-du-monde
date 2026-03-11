@@ -573,10 +573,8 @@ footer { background: var(--dark); color: #fff; }
   .card-meta { gap: .8rem; font-size: .75rem; }
 }
 
-/* Prevent layout shift and improve performance */
-img { aspect-ratio: auto; }
-.recipe-card img { width: 100%; height: auto; min-height: 200px; background: linear-gradient(90deg, #f3f4f6, #e5e7eb, #f3f4f6); background-size: 200% 100%; animation: shimmer 2s infinite; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+/* Stabilisation du layout : réserve l'espace avant chargement image (évite CLS) */
+.recipe-card img { width: 100%; aspect-ratio: 3/2; object-fit: cover; background: #e8e3db; }
 
 /* =====================================================
    PAGE DÉTAIL RECETTE

@@ -58,6 +58,28 @@
       .hero-actions .btn { width: 100%; justify-content: center; }
       body { font-size: 14px; }
     }
+    /* ── Réserver l'espace header : évite le CLS quand renderNav() injecte le DOM ── */
+    #siteHeader { min-height: 68px; background: #1e1e1e; }
+    /* ── Stats-bar critique : visible above-the-fold, évite le double-rendu CSS ── */
+    .stats-bar { background: #1e1e1e; color: #fff; }
+    .stats-inner { max-width: 1200px; margin: 0 auto; padding: 1.2rem 1.5rem; display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { display: block; font-size: 1.8rem; font-weight: 900; color: #e07b39; }
+    .stat-label { font-size: .8rem; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: 1px; }
+    /* ── Section "Nos recommandations" – partiellement above-the-fold ── */
+    .section { padding: 3.5rem 0; }
+    .section-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.8rem; }
+    .section-header h2 { font-size: 1.6rem; font-weight: 800; color: #1e1e1e; }
+    .link-more { font-size: .9rem; color: #e07b39; font-weight: 600; }
+    .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+    @media (max-width: 700px) {
+      #siteHeader { min-height: 60px; }
+      .stats-inner { gap: 1rem; padding: 1rem 1.5rem; }
+      .stat-num { font-size: 1.5rem; }
+      .section { padding: 2rem 0; }
+      .recipe-grid { grid-template-columns: 1fr; gap: 1.2rem; padding: 0 1rem 2rem; }
+    }
   </style>
   <!-- CSS non-bloquant : le CSS critique ci-dessus couvre le above-the-fold -->
   <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'" />
@@ -214,8 +236,17 @@
         card.className = 'recipe-card';
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
+        const imgMobile = r.image.replace(/w=\d+/, 'w=360').replace(/q=\d+/, 'q=70');
+        const imgDesktop = r.image.replace(/w=\d+/, 'w=560').replace(/q=\d+/, 'q=75');
         card.innerHTML = `
-          <img src="${r.image}" alt="${r.titre}" loading="lazy" width="280" height="200" />
+          <img
+            src="${imgMobile}"
+            srcset="${imgMobile} 360w, ${imgDesktop} 560w"
+            sizes="(max-width: 600px) calc(100vw - 2rem), 280px"
+            alt="${r.titre}"
+            loading="lazy"
+            width="280" height="187"
+          />
           <div class="card-body">
             <div class="card-tags">
               <span class="tag tag-categorie">${r.categorie}</span>
