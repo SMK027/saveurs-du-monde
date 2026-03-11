@@ -216,37 +216,24 @@
               </div>
             </div>` : ''}
 
-            ${secretShopMode ? `
-            <div class="rd-secret-banner" role="alert">
-              <span class="rd-secret-banner-icon">🔮</span>
-              <div>
-                <strong>Mode Boutique Secrète activé</strong>
-                <p>Les ingrédients et étapes marqués en violet sont entièrement fictifs.
-                Ils n’ont aucune existence réelle et ne doivent surtout pas être mis en pratique.
-                Ce mode est uniquement là pour le fun !</p>
-              </div>
-            </div>` : ''}
-
             <section class="rd-section">
               <h2 class="rd-section-title">📋 Ingrédients</h2>
               <p class="rd-ing-note">Les coûts s'ajustent selon le nombre de personnes.</p>
               <ul class="rd-ingredients">
                 ${(() => {
                   const allIngs = getEnhancedIngredients(recipe.ingredients);
-                  const secretStart = recipe.ingredients.length;
                   return allIngs.map((ing, i) => {
-                    const isSecret = i >= secretStart;
-                    const prix = !isSecret && recipe.prixIngredients && recipe.prixIngredients[i] != null
+                    const prix = recipe.prixIngredients && recipe.prixIngredients[i] != null
                       ? recipe.prixIngredients[i] : null;
                     const parts = parseIngParts(ing);
-                    const dataAttrs = !isSecret && parts
+                    const dataAttrs = parts
                       ? ` data-qty="${parts.qty}" data-rest="${parts.rest.replace(/"/g, '&quot;')}"`
                       : '';
-                    return `<li${isSecret ? ' class="secret-item"' : ''}>
+                    return `<li>
                       <span class="ing-nom"${dataAttrs}>${ing}</span>
-                      ${!isSecret && prix !== null && prix > 0
+                      ${prix !== null && prix > 0
                         ? `<span class="ing-prix" data-base="${prix}">-</span>`
-                        : `<span class="ing-prix ing-inclus">${isSecret ? '🔮 fictif' : 'inclus'}</span>`}
+                        : `<span class="ing-prix ing-inclus">inclus</span>`}
                     </li>`;
                   }).join('');
                 })()}
@@ -262,9 +249,8 @@
               <ol class="rd-steps">
                 ${(() => {
                   const allSteps = getEnhancedSteps(recipe.etapes);
-                  const secretStart = recipe.etapes.length;
-                  return allSteps.map((s, i) =>
-                    `<li${i >= secretStart ? ' class="secret-item"' : ''}><span class="rd-step-text">${s}</span></li>`
+                  return allSteps.map(s =>
+                    `<li><span class="rd-step-text">${s}</span></li>`
                   ).join('');
                 })()}
               </ol>

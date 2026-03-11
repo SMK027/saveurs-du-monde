@@ -2,110 +2,12 @@
    SAVEURS DU MONDE – Script principal
    ===================================================== */
 
-// ─────────────────────────────────────────────────────
-// MODE BOUTIQUE SECRÈTE
-// ─────────────────────────────────────────────────────
-let secretShopMode = localStorage.getItem('secretShopMode') === 'true';
-
-const SECRET_INGREDIENTS = [
-  "🛢️ 2 cl de gasoil sans plomb 95 [FICTIF]",
-  "🚬 1 pincée de tabac blond effiloché [FICTIF]",
-  "☠️ 3 gouttes de cyanure de cuisine™ [FICTIF]",
-  "🧪 5 mg d'arsenic en poudre fine [FICTIF]",
-  "⛽ 1 c. à café d'éthanol dénaturé [FICTIF]",
-  "🪵 Quelques copeaux de bois de if (toxic grade) [FICTIF]",
-  "💣 1 bâton de dynamite (non inclus) [FICTIF]",
-  "📜 Une étiquette en papier kraft avec un message mystérieux [FICTIF]",
-  "🧑‍🔬 Un masque de plongée en carton pour la sécurité (non inclus) [FICTIF]"
-];
-
-const SECRET_STEPS = [
-  "⚠️ ÉTAPE FICTIVE : Verser délicatement le carburant en filet très fin, en veillant à ne pas fumer à proximité.",
-  "⚠️ ÉTAPE FICTIVE : Dissoudre les poudres toxiques dans l'éthanol dénaturé et mélanger avec une spatule en amiante (imaginaire).",
-  "⚠️ ÉTAPE FICTIVE : Laisser reposer 13 minutes dans un endroit non ventilé — porter le masque de plongée en carton fourni avec la recette.",
-  "⚠️ ÉTAPE FICTIVE : Ajouter les copeaux de bois de if pour une touche d'amertume, puis saupoudrer de tabac pour un arôme fumé (optionnel).",
-  "⚠️ ÉTAPE FICTIVE : Verser le mélange dans un flacon en verre avec une étiquette en papier kraft, et ajouter un petit mot de la main de l'ami(e) qui vous a offert cette recette.",
-  "⚠️ ÉTAPE FICTIVE : Consommer avec modération, et éviter les enfants et les animaux domestiques.",
-  "⚠️ ÉTAPE FICTIVE : Conserver dans un endroit frais, à l'abri de la lumière, et loin des zones de circulation humaine fréquentée.",
-  "⚠️ ÉTAPE FICTIVE : Après péromption, utiliser le bâton de dynamite pour une expérience de cuisine explosive (non incluse, à acheter séparément dans une boutique spécialisée)."
-];
-
-const SECRET_PASSWORD = 'poison';
-
-function toggleSecretShop() {
-  if (!secretShopMode) {
-    // Demander le mot de passe avant d'activer
-    openSecretPasswordModal();
-  } else {
-    // Désactivation directe, sans mot de passe
-    secretShopMode = false;
-    localStorage.setItem('secretShopMode', 'false');
-    _applySecretShopUI();
-  }
-}
-
-function openSecretPasswordModal() {
-  const overlay = document.getElementById('secretPasswordOverlay');
-  if (!overlay) return;
-  overlay.classList.remove('hidden');
-  const input = document.getElementById('secretPasswordInput');
-  if (input) { input.value = ''; input.focus(); }
-  const err = document.getElementById('secretPasswordError');
-  if (err) err.classList.add('hidden');
-}
-
-function closeSecretPasswordModal() {
-  const overlay = document.getElementById('secretPasswordOverlay');
-  if (overlay) overlay.classList.add('hidden');
-}
-
-function submitSecretPassword() {
-  const input = document.getElementById('secretPasswordInput');
-  const err   = document.getElementById('secretPasswordError');
-  if (!input) return;
-  if (input.value === SECRET_PASSWORD) {
-    closeSecretPasswordModal();
-    secretShopMode = true;
-    localStorage.setItem('secretShopMode', 'true');
-    _applySecretShopUI();
-  } else {
-    if (err) {
-      err.classList.remove('hidden');
-      err.classList.remove('shake');
-      // Force reflow pour relancer l'animation
-      void err.offsetWidth;
-      err.classList.add('shake');
-    }
-    input.value = '';
-    input.focus();
-  }
-}
-
-function _applySecretShopUI() {
-  const btn = document.getElementById('secretShopBtn');
-  if (btn) {
-    btn.textContent = secretShopMode ? '🔓 Mode Actif' : '🔒 Boutique Secrète';
-    btn.classList.toggle('active', secretShopMode);
-  }
-  if (typeof applyFilters === 'function') applyFilters();
-
-  // Si modal recette ouverte, la rafraîchir
-  const modal = document.getElementById('modal');
-  if (modal && !modal.classList.contains('hidden')) {
-    const currentRecipeId = parseInt(document.getElementById('modalDetailsBtn').href.split('id=')[1]);
-    const recipe = RECIPES.find(r => r.id === currentRecipeId);
-    if (recipe) openModal(recipe);
-  }
-}
-
 function getEnhancedIngredients(ingredients) {
-  if (!secretShopMode) return ingredients;
-  return [...ingredients, ...SECRET_INGREDIENTS];
+  return ingredients;
 }
 
 function getEnhancedSteps(steps) {
-  if (!secretShopMode) return steps;
-  return [...steps, ...SECRET_STEPS];
+  return steps;
 }
 
 // ─────────────────────────────────────────────────────
@@ -1237,29 +1139,13 @@ function openModal(recipe) {  if (!modal) return;  document.getElementById("moda
     }
   }
 
-  // Avertissement boutique secrète dans la modal
-  const modalSecretWarning = document.getElementById('modalSecretWarning');
-  if (modalSecretWarning) {
-    if (secretShopMode) {
-      modalSecretWarning.classList.remove('hidden');
-    } else {
-      modalSecretWarning.classList.add('hidden');
-    }
-  }
-
   const ingList = document.getElementById("modalIngredients");
   const allIngredients = getEnhancedIngredients(recipe.ingredients);
-  const secretIngStart = recipe.ingredients.length;
-  ingList.innerHTML = allIngredients.map((i, idx) =>
-    `<li${idx >= secretIngStart ? ' class="secret-item"' : ''}>${i}</li>`
-  ).join("");
+  ingList.innerHTML = allIngredients.map(i => `<li>${i}</li>`).join("");
 
   const stepList = document.getElementById("modalSteps");
   const allSteps = getEnhancedSteps(recipe.etapes);
-  const secretStepStart = recipe.etapes.length;
-  stepList.innerHTML = allSteps.map((s, idx) =>
-    `<li${idx >= secretStepStart ? ' class="secret-item"' : ''}>${s}</li>`
-  ).join("");
+  stepList.innerHTML = allSteps.map(s => `<li>${s}</li>`).join("");
 
   modal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
@@ -1355,33 +1241,3 @@ if (document.getElementById("recipeGrid")) {
   document.querySelectorAll("[data-value='all']").forEach(a => a.classList.add("active-filter"));
 }
 
-// Initialiser l'état du bouton boutique secrète au chargement
-(function () {
-  const btn = document.getElementById('secretShopBtn');
-  if (btn) {
-    btn.textContent = secretShopMode ? '🔓 Mode Actif' : '🔒 Boutique Secrète';
-    btn.classList.toggle('active', secretShopMode);
-  }
-
-  // Gestionnaires de la modale mot de passe
-  const overlay = document.getElementById('secretPasswordOverlay');
-  if (overlay) {
-    // Fermer en cliquant sur le fond
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) closeSecretPasswordModal();
-    });
-    // Fermer avec Échap
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
-        closeSecretPasswordModal();
-      }
-    });
-    // Valider avec Entrée
-    const input = document.getElementById('secretPasswordInput');
-    if (input) {
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') submitSecretPassword();
-      });
-    }
-  }
-})();
