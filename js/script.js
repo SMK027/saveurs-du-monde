@@ -989,6 +989,73 @@ const state = {
   }
 };
 
+const SEO_BASE_URL = "https://saveursdumonde.leofranz.fr";
+
+function upsertJsonLd(id, data) {
+  let node = document.getElementById(id);
+  if (!node) {
+    node = document.createElement("script");
+    node.type = "application/ld+json";
+    node.id = id;
+    document.head.appendChild(node);
+  }
+  node.textContent = JSON.stringify(data);
+}
+
+function updateListingSeo(filteredRecipes) {
+  if (!document.getElementById("recipeGrid")) return;
+
+  const activeFilters = Object.entries(state.filters).filter(([, value]) => value !== "all");
+  const hasSearch = state.search.trim().length > 0;
+  const hasSeoFilter = hasSearch || activeFilters.length > 0;
+
+  const filterLabels = activeFilters.map(([key, value]) => {
+    if (FILTER_LABELS[key] && FILTER_LABELS[key].map && FILTER_LABELS[key].map[value]) {
+      return FILTER_LABELS[key].map[value];
+    }
+    return value;
+  });
+
+  const titleParts = [];
+  if (filterLabels.length > 0) titleParts.push(filterLabels.join(" • "));
+  if (hasSearch) titleParts.push(`recherche: ${state.search.trim()}`);
+
+  document.title = titleParts.length > 0
+    ? `Recettes ${titleParts.join(" | ")} | Saveurs du Monde`
+    : "Recettes du monde | Saveurs du Monde";
+
+  const description = titleParts.length > 0
+    ? `${filteredRecipes.length} recette${filteredRecipes.length > 1 ? "s" : ""} trouvee${filteredRecipes.length > 1 ? "s" : ""} pour ${titleParts.join(", ")}.`
+    : "Consultez toutes nos recettes du monde: entrees, plats, desserts et boissons avec filtres par cuisine, saison et difficulte.";
+
+  const descMeta = document.getElementById("seoDescription") || document.querySelector('meta[name="description"]');
+  if (descMeta) descMeta.setAttribute("content", description);
+
+  const robotsMeta = document.getElementById("seoRobots") || document.querySelector('meta[name="robots"]');
+  if (robotsMeta) robotsMeta.setAttribute("content", hasSeoFilter ? "noindex, follow" : "index, follow");
+
+  const canonical = document.getElementById("canonicalLink") || document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.setAttribute("href", `${SEO_BASE_URL}/pages/recettes.html`);
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute("content", document.title);
+
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogDescription) ogDescription.setAttribute("content", description);
+
+  upsertJsonLd("recipesJsonLd", {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Liste des recettes Saveurs du Monde",
+    "itemListElement": filteredRecipes.slice(0, 50).map((recipe, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `${SEO_BASE_URL}/pages/recette.html?id=${recipe.id}`,
+      "name": recipe.titre
+    }))
+  });
+}
+
 // ─────────────────────────────────────────────────────
 // UTILITAIRES
 // ─────────────────────────────────────────────────────
@@ -1090,6 +1157,7 @@ function applyFilters() {
 
   renderCards(filtered);
   renderActiveFilters();
+  updateListingSeo(filtered);
 }
 
 // ─────────────────────────────────────────────────────

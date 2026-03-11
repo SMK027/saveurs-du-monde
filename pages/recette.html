@@ -3,7 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recette – Saveurs du Monde</title>
+  <title>Recette | Saveurs du Monde</title>
+  <meta id="seoDescription" name="description" content="Consultez une recette detaillee avec ingredients, etapes, temps de preparation et portions." />
+  <meta name="robots" content="index, follow" />
+  <link id="canonicalLink" rel="canonical" href="https://saveursdumonde.leofranz.fr/pages/recette.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content="Saveurs du Monde" />
+  <meta id="ogTitle" property="og:title" content="Recette | Saveurs du Monde" />
+  <meta id="ogDescription" property="og:description" content="Suivez les etapes d'une recette du monde avec ingredients et conseils." />
+  <meta id="ogUrl" property="og:url" content="https://saveursdumonde.leofranz.fr/pages/recette.html" />
+  <meta id="ogImage" property="og:image" content="https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=1200&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -25,6 +36,18 @@
   <script>
     renderNav('recettes', '../');
     renderFooter('../');
+
+    const SEO_BASE_URL = 'https://saveursdumonde.leofranz.fr';
+    function upsertJsonLd(id, data) {
+      let node = document.getElementById(id);
+      if (!node) {
+        node = document.createElement('script');
+        node.type = 'application/ld+json';
+        node.id = id;
+        document.head.appendChild(node);
+      }
+      node.textContent = JSON.stringify(data);
+    }
 
     /* ── Retrait physique du header/footer site pendant l'impression ──
        display:none ne suffit pas : Chromium les inclut quand même
@@ -61,8 +84,55 @@
           <a href="recettes.html" class="btn btn-primary">Voir toutes les recettes</a>
         </div>`;
       document.title = 'Recette introuvable – Saveurs du Monde';
+      const robotsMeta = document.querySelector('meta[name="robots"]');
+      if (robotsMeta) robotsMeta.setAttribute('content', 'noindex, follow');
     } else {
       document.title = `${recipe.titre} – Saveurs du Monde`;
+
+      const recipeUrl = `${SEO_BASE_URL}/pages/recette.html?id=${recipe.id}`;
+      const description = `${recipe.titre}: recette ${recipe.categorie.toLowerCase()} de cuisine ${recipe.cuisine.toLowerCase()}, prete en ${recipe.temps} minutes pour ${recipe.portions} personne${recipe.portions > 1 ? 's' : ''}.`;
+
+      const canonical = document.getElementById('canonicalLink');
+      if (canonical) canonical.setAttribute('href', recipeUrl);
+
+      const seoDescription = document.getElementById('seoDescription');
+      if (seoDescription) seoDescription.setAttribute('content', description);
+
+      const ogTitle = document.getElementById('ogTitle');
+      if (ogTitle) ogTitle.setAttribute('content', document.title);
+
+      const ogDescription = document.getElementById('ogDescription');
+      if (ogDescription) ogDescription.setAttribute('content', description);
+
+      const ogUrl = document.getElementById('ogUrl');
+      if (ogUrl) ogUrl.setAttribute('content', recipeUrl);
+
+      const ogImage = document.getElementById('ogImage');
+      if (ogImage) ogImage.setAttribute('content', recipe.image);
+
+      upsertJsonLd('recipeJsonLd', {
+        '@context': 'https://schema.org',
+        '@type': 'Recipe',
+        'name': recipe.titre,
+        'image': [recipe.image],
+        'description': description,
+        'recipeCategory': recipe.categorie,
+        'recipeCuisine': recipe.cuisine,
+        'keywords': `${recipe.cuisine}, ${recipe.categorie}, ${recipe.difficulte}`,
+        'recipeYield': `${recipe.portions} portions`,
+        'prepTime': `PT${recipe.temps}M`,
+        'totalTime': `PT${recipe.temps}M`,
+        'recipeIngredient': recipe.ingredients,
+        'recipeInstructions': recipe.etapes.map(step => ({
+          '@type': 'HowToStep',
+          'text': step
+        })),
+        'author': {
+          '@type': 'Organization',
+          'name': 'Saveurs du Monde'
+        },
+        'mainEntityOfPage': recipeUrl
+      });
 
       /* Difficultés → classe CSS */
       const diffClass = { 'Facile': 'Facile', 'Moyen': 'Moyen', 'Difficile': 'Difficile' };
@@ -359,7 +429,7 @@
             <div id="printFooter" aria-hidden="true">
               <div class="pf-inner">
                 <span id="pfRecipeTitle">${recipe.titre}</span>
-                <span class="pf-site">saveursdumonde.fr</span>
+                <span class="pf-site">saveursdumonde.leofranz.fr</span>
               </div>
               <div class="pf-bar"></div>
             </div>`;

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Evite l'indexation des pages de filtres internes et des recherches.
+Disallow: /pages/recettes.html?*
+
+Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml

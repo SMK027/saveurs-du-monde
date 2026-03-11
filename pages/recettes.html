@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Saveurs du Monde – Recettes</title>
+  <title>Recettes du monde | Saveurs du Monde</title>
+  <meta id="seoDescription" name="description" content="Consultez toutes nos recettes du monde: entrees, plats, desserts et boissons avec filtres par cuisine, saison et difficulte." />
+  <meta id="seoRobots" name="robots" content="index, follow" />
+  <link id="canonicalLink" rel="canonical" href="https://saveursdumonde.leofranz.fr/pages/recettes.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content="Saveurs du Monde" />
+  <meta property="og:title" content="Recettes du monde | Saveurs du Monde" />
+  <meta property="og:description" content="Recherchez et filtrez les recettes selon vos envies." />
+  <meta property="og:url" content="https://saveursdumonde.leofranz.fr/pages/recettes.html" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -98,6 +108,12 @@
 
   <!-- ===== CONTENU PRINCIPAL ===== -->
   <main>
+    <section class="section section-alt" aria-label="Introduction recettes">
+      <div class="section-inner">
+        <h1>Toutes les recettes du monde</h1>
+        <p>Filtrez par categorie, cuisine, difficulte, saison et temps de preparation pour trouver la recette ideale.</p>
+      </div>
+    </section>
     <p id="resultsCount"></p>
     <div id="recipeGrid" class="recipe-grid"></div>
     <p id="noResults" class="no-results hidden">Aucune recette ne correspond à votre recherche.</p>
@@ -173,6 +189,7 @@
     const params = new URLSearchParams(window.location.search);
     const urlCat = params.get('categorie');
     const urlCui = params.get('cuisine');
+    const urlSearch = params.get('search');
 
     if (urlCat) {
       state.filters.categorie = urlCat;
@@ -190,6 +207,12 @@
       state.filters.saison = urlSaison;
       const link = document.querySelector(`[data-filter="saison"][data-value="${CSS.escape(urlSaison)}"]`);
       if (link) link.classList.add('active-filter');
+    }
+
+    if (urlSearch) {
+      state.search = urlSearch;
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = urlSearch;
     }
 
     applyFilters();
