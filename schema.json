@@ -1,0 +1,232 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://saveursdumonde.leofranz.fr/#organization",
+      "name": "Saveurs du Monde",
+      "url": "https://saveursdumonde.leofranz.fr/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://saveursdumonde.leofranz.fr/images/logo.png",
+        "width": 250,
+        "height": 250
+      },
+      "description": "Un site de recettes du monde faciles et gourmandes pour tous les niveaux. Découvrez des recettes de cuisines du monde: française, italienne, asiatique, mexicaine et américaine.",
+      "email": "contact@saveursdumonde.leofranz.fr",
+      "telephone": "+33-1-XX-XX-XX-XX",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "FR",
+        "addressLocality": "Paris"
+      },
+      "sameAs": [
+        "https://www.facebook.com/saveursdumonde",
+        "https://www.instagram.com/saveursdumonde",
+        "https://www.youtube.com/channel/saveursdumonde"
+      ],
+      "foundingDate": "2024",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "@id": "https://saveursdumonde.leofranz.fr/#contact",
+        "contactType": "Customer Support",
+        "email": "contact@saveursdumonde.leofranz.fr",
+        "url": "https://saveursdumonde.leofranz.fr/pages/contact.html",
+        "areaServed": "FR",
+        "availableLanguage": ["fr"]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://saveursdumonde.leofranz.fr/#website",
+      "name": "Saveurs du Monde",
+      "url": "https://saveursdumonde.leofranz.fr/",
+      "inLanguage": "fr-FR",
+      "publisher": {
+        "@id": "https://saveursdumonde.leofranz.fr/#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://saveursdumonde.leofranz.fr/pages/recettes.html?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://saveursdumonde.leofranz.fr/#breadcrumb-home",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Accueil",
+          "item": "https://saveursdumonde.leofranz.fr/"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://saveursdumonde.leofranz.fr/#breadcrumb-recipes",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Accueil",
+          "item": "https://saveursdumonde.leofranz.fr/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Toutes les recettes",
+          "item": "https://saveursdumonde.leofranz.fr/pages/recettes.html"
+        }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://saveursdumonde.leofranz.fr/pages/recettes.html",
+      "name": "Toutes les recettes du monde",
+      "url": "https://saveursdumonde.leofranz.fr/pages/recettes.html",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://saveursdumonde.leofranz.fr/#website"
+      },
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=1"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=2"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "url": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=3"
+          }
+        ]
+      }
+    },
+    {
+      "@type": "Recipe",
+      "@id": "https://saveursdumonde.leofranz.fr/pages/recette.html?id=1",
+      "name": "Pâtes à la Carbonara",
+      "description": "Une délicieuse recette italienne traditionnelle originaire de Rome.",
+      "image": "https://saveursdumonde.leofranz.fr/images/carbonara.jpg",
+      "recipeCategory": "Plat Principal",
+      "recipeCuisine": "Italienne",
+      "recipeYield": "4 portions",
+      "prepTime": "PT10M",
+      "cookTime": "PT20M",
+      "totalTime": "PT30M",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "142"
+      },
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "450 calories"
+      },
+      "recipeIngredient": [
+        "400g de pâtes spaghetti",
+        "200g de lard ou pancetta",
+        "4 œufs",
+        "100g de fromage Pecorino Romano",
+        "Poivre noir moulu",
+        "sel"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "text": "Faire bouillir l'eau salée et cuire les pâtes al dente."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Pendant ce temps, couper le lard en petits morceaux et le faire dorer."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Dans un bol, fouetter les œufs avec le fromage râpé et le poivre."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Égoutter les pâtes et les ajouter au mélange d'œufs."
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "@id": "https://saveursdumonde.leofranz.fr/#organization"
+      },
+      "isPartOf": {
+        "@id": "https://saveursdumonde.leofranz.fr/#website"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://saveursdumonde.leofranz.fr/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Comment filtrer les recettes par niveau de difficulté?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Utilisez les filtres disponibles sur la page 'Toutes les recettes' pour trier par difficulté, temps de préparation, cuisine, catégorie et saison."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Puis-je imprimer une recette?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui, sur chaque page de recette, un bouton 'Imprimer' vous permet d'exporter la recette en PDF ou papier."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment dois-je adapter les portions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Utilisez le simulateur de prix sur le côté de chaque recette pour ajuster les portions et toutes les quantités d'ingrédients se mettront à jour automatiquement."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "AboutPage",
+      "@id": "https://saveursdumonde.leofranz.fr/pages/about.html",
+      "name": "À propos de Saveurs du Monde",
+      "url": "https://saveursdumonde.leofranz.fr/pages/about.html",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://saveursdumonde.leofranz.fr/#website"
+      }
+    },
+    {
+      "@type": "ContactPage",
+      "@id": "https://saveursdumonde.leofranz.fr/pages/contact.html",
+      "name": "Nous contacter",
+      "url": "https://saveursdumonde.leofranz.fr/pages/contact.html",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://saveursdumonde.leofranz.fr/#website"
+      }
+    },
+    {
+      "@type": "AggregateOffer",
+      "@id": "https://saveursdumonde.leofranz.fr/#offer",
+      "name": "Accès aux recettes",
+      "description": "Accès complet à toutes nos recettes du monde gratuit et sans inscription.",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@id": "https://saveursdumonde.leofranz.fr/#organization"
+      }
+    }
+  ]
+}
