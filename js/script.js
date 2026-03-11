@@ -2,14 +2,6 @@
    SAVEURS DU MONDE – Script principal
    ===================================================== */
 
-function getEnhancedIngredients(ingredients) {
-  return ingredients;
-}
-
-function getEnhancedSteps(steps) {
-  return steps;
-}
-
 // ─────────────────────────────────────────────────────
 // DONNÉES : recettes codées en dur (pas de base de données)
 // ─────────────────────────────────────────────────────
@@ -1140,12 +1132,10 @@ function openModal(recipe) {  if (!modal) return;  document.getElementById("moda
   }
 
   const ingList = document.getElementById("modalIngredients");
-  const allIngredients = getEnhancedIngredients(recipe.ingredients);
-  ingList.innerHTML = allIngredients.map(i => `<li>${i}</li>`).join("");
+  ingList.innerHTML = recipe.ingredients.map(i => `<li>${i}</li>`).join("");
 
   const stepList = document.getElementById("modalSteps");
-  const allSteps = getEnhancedSteps(recipe.etapes);
-  stepList.innerHTML = allSteps.map(s => `<li>${s}</li>`).join("");
+  stepList.innerHTML = recipe.etapes.map(s => `<li>${s}</li>`).join("");
 
   modal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
@@ -1153,6 +1143,7 @@ function openModal(recipe) {  if (!modal) return;  document.getElementById("moda
 }
 
 function closeModal() {
+  if (!modal) return;
   modal.classList.add("hidden");
   document.body.style.overflow = "";
 }

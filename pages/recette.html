@@ -37,7 +37,7 @@
     renderNav('recettes', '../');
     renderFooter('../');
 
-    const SEO_BASE_URL = 'https://saveursdumonde.leofranz.fr';
+    const RECIPE_SEO_BASE_URL = 'https://saveursdumonde.leofranz.fr';
     function upsertJsonLd(id, data) {
       let node = document.getElementById(id);
       if (!node) {
@@ -89,7 +89,7 @@
     } else {
       document.title = `${recipe.titre} – Saveurs du Monde`;
 
-      const recipeUrl = `${SEO_BASE_URL}/pages/recette.html?id=${recipe.id}`;
+      const recipeUrl = `${RECIPE_SEO_BASE_URL}/pages/recette.html?id=${recipe.id}`;
       const description = `${recipe.titre}: recette ${recipe.categorie.toLowerCase()} de cuisine ${recipe.cuisine.toLowerCase()}, prete en ${recipe.temps} minutes pour ${recipe.portions} personne${recipe.portions > 1 ? 's' : ''}.`;
 
       const canonical = document.getElementById('canonicalLink');
@@ -221,8 +221,7 @@
               <p class="rd-ing-note">Les coûts s'ajustent selon le nombre de personnes.</p>
               <ul class="rd-ingredients">
                 ${(() => {
-                  const allIngs = getEnhancedIngredients(recipe.ingredients);
-                  return allIngs.map((ing, i) => {
+                  return recipe.ingredients.map((ing, i) => {
                     const prix = recipe.prixIngredients && recipe.prixIngredients[i] != null
                       ? recipe.prixIngredients[i] : null;
                     const parts = parseIngParts(ing);
@@ -248,8 +247,7 @@
               <h2 class="rd-section-title">👨‍🍳 Préparation</h2>
               <ol class="rd-steps">
                 ${(() => {
-                  const allSteps = getEnhancedSteps(recipe.etapes);
-                  return allSteps.map(s =>
+                  return recipe.etapes.map(s =>
                     `<li><span class="rd-step-text">${s}</span></li>`
                   ).join('');
                 })()}
