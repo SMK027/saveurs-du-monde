@@ -1097,40 +1097,6 @@ function renderActiveFilters() {
 // ─────────────────────────────────────────────────────
 const modal = document.getElementById("modal");
 
-function initLazyBackgrounds(root = document) {
-  const lazyBackgrounds = Array.from(root.querySelectorAll(".lazy-bg[data-bg]"));
-  if (lazyBackgrounds.length === 0) return;
-
-  const loadBackground = element => {
-    const source = element.dataset.bg;
-    if (!source) return;
-
-    element.style.backgroundImage = `url("${source}")`;
-    element.classList.add("lazy-bg-loaded");
-    delete element.dataset.bg;
-  };
-
-  if (!("IntersectionObserver" in window)) {
-    lazyBackgrounds.forEach(loadBackground);
-    return;
-  }
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      loadBackground(entry.target);
-      observer.unobserve(entry.target);
-    });
-  }, {
-    rootMargin: "200px 0px",
-    threshold: 0.01
-  });
-
-  lazyBackgrounds.forEach(element => observer.observe(element));
-}
-
-window.initLazyBackgrounds = initLazyBackgrounds;
-
 function openModal(recipe) {
   if (!modal) return;
 
