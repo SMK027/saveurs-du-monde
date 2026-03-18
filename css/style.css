@@ -375,6 +375,17 @@ main { flex: 1; }
 }
 .cat-card-full:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
 .cat-card-img { height: 200px; background-size: cover; background-position: center; position: relative; }
+.progressive-media[data-hd-src],
+.progressive-bg[data-bg-hd] {
+  cursor: zoom-in;
+}
+.progressive-media[data-hd-src]:not(.hd-loaded) {
+  filter: saturate(.9);
+}
+.progressive-media.hd-loaded,
+.progressive-bg.hd-loaded {
+  cursor: default;
+}
 .cat-card-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.35)); }
 .cat-card-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: .3rem; }
 .cat-card-body .cat-card-icon { font-size: 2rem; }

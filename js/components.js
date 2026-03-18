@@ -34,12 +34,70 @@ function initLazyBackgrounds(root = document) {
   lazyBackgrounds.forEach(element => observer.observe(element));
 }
 
+function initClickToHdMedia(root = document) {
+  const hdImages = Array.from(root.querySelectorAll('img[data-hd-src]'));
+  hdImages.forEach(image => {
+    if (image.dataset.hdBound === '1') return;
+    image.dataset.hdBound = '1';
+    image.classList.add('progressive-media');
+    image.title = image.title || 'Cliquez pour charger la version HD';
+
+    image.addEventListener('click', () => {
+      const hdSrc = image.dataset.hdSrc;
+      if (!hdSrc || image.dataset.hdLoaded === '1') return;
+
+      const preload = new Image();
+      preload.decoding = 'async';
+      preload.onload = () => {
+        image.src = hdSrc;
+        if (image.dataset.hdSrcset) {
+          image.srcset = image.dataset.hdSrcset;
+        } else {
+          image.removeAttribute('srcset');
+        }
+        image.dataset.hdLoaded = '1';
+        image.classList.add('hd-loaded');
+        image.title = 'Image HD chargée';
+      };
+      preload.src = hdSrc;
+    }, { once: true });
+  });
+
+  const hdBackgrounds = Array.from(root.querySelectorAll('[data-bg-hd]'));
+  hdBackgrounds.forEach(element => {
+    if (element.dataset.hdBound === '1') return;
+    element.dataset.hdBound = '1';
+    element.classList.add('progressive-bg');
+    element.title = element.title || 'Cliquez pour charger l\'image HD';
+
+    element.addEventListener('click', () => {
+      const hdSrc = element.dataset.bgHd;
+      if (!hdSrc || element.dataset.hdLoaded === '1') return;
+
+      const preload = new Image();
+      preload.decoding = 'async';
+      preload.onload = () => {
+        element.style.backgroundImage = `url("${hdSrc}")`;
+        element.dataset.hdLoaded = '1';
+        element.classList.add('hd-loaded');
+        element.title = 'Image HD chargée';
+      };
+      preload.src = hdSrc;
+    }, { once: true });
+  });
+}
+
 window.initLazyBackgrounds = initLazyBackgrounds;
+window.initClickToHdMedia = initClickToHdMedia;
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => initLazyBackgrounds(), { once: true });
+  document.addEventListener('DOMContentLoaded', () => {
+    initLazyBackgrounds();
+    initClickToHdMedia();
+  }, { once: true });
 } else {
   initLazyBackgrounds();
+  initClickToHdMedia();
 }
 
 /**
