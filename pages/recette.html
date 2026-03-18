@@ -31,23 +31,24 @@
 
   <div id="siteFooter"></div>
 
-  <script src="../js/components.js"></script>
-  <script src="../js/script.js"></script>
+  <script src="../js/components.js" defer></script>
+  <script src="../js/script.js" defer></script>
   <script>
-    renderNav('recettes', '../');
-    renderFooter('../');
+    document.addEventListener('DOMContentLoaded', () => {
+      renderNav('recettes', '../');
+      renderFooter('../');
 
-    const RECIPE_SEO_BASE_URL = 'https://saveursdumonde.leofranz.fr';
-    function upsertJsonLd(id, data) {
-      let node = document.getElementById(id);
-      if (!node) {
-        node = document.createElement('script');
-        node.type = 'application/ld+json';
-        node.id = id;
-        document.head.appendChild(node);
+      const RECIPE_SEO_BASE_URL = 'https://saveursdumonde.leofranz.fr';
+      function upsertJsonLd(id, data) {
+        let node = document.getElementById(id);
+        if (!node) {
+          node = document.createElement('script');
+          node.type = 'application/ld+json';
+          node.id = id;
+          document.head.appendChild(node);
+        }
+        node.textContent = JSON.stringify(data);
       }
-      node.textContent = JSON.stringify(data);
-    }
 
     /* ── Retrait physique du header/footer site pendant l'impression ──
        display:none ne suffit pas : Chromium les inclut quand même
@@ -444,7 +445,7 @@
 
         update();
       })();
-    }
+    }, { once: true });
   </script>
 </body>
 </html>

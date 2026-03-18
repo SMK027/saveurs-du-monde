@@ -145,95 +145,93 @@
 
   <div id="siteFooter"></div>
 
-  <script src="../js/components.js"></script>
+  <script src="../js/components.js" defer></script>
   <script>
-    renderNav('contact', '../');
-    renderFooter('../');
+    document.addEventListener('DOMContentLoaded', () => {
+      renderNav('contact', '../');
+      renderFooter('../');
 
-    // ===== VALIDATION DU FORMULAIRE =====
-    const form = document.getElementById('contactForm');
-    const successDiv = document.getElementById('formSuccess');
+      // ===== VALIDATION DU FORMULAIRE =====
+      const form = document.getElementById('contactForm');
+      const successDiv = document.getElementById('formSuccess');
 
-    function showError(id, msg) {
-      const el = document.getElementById(id + 'Error');
-      if (el) { el.textContent = msg; el.classList.toggle('visible', !!msg); }
-      const field = document.getElementById(id);
-      if (field) field.classList.toggle('invalid', !!msg);
-    }
-
-    async function validateEmail(email) {
-      const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!emailReg.test(email)) return false;
-
-      const [localPart, domain] = email.split('@');
-      
-      // Vérifications de la partie locale
-      if (localPart.includes('+')) return false;
-      if (localPart.length < 2 || localPart.length > 64) return false;
-      if (localPart.startsWith('.') || localPart.endsWith('.')) return false;
-      if (localPart.includes('..')) return false;
-
-      // Domaines jetables
-      const disposableDomains = ['tempmail.com', 'guerrillamail.com', 'mailinator.com', '10minutemail.com', 'throwaway.email'];
-      if (disposableDomains.includes(domain)) return false;
-
-      // Vérification DNS MX
-      try {
-        const response = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
-        const data = await response.json();
-        return data.Status === 0 && data.Answer && data.Answer.length > 0;
-      } catch {
-        return true;
+      function showError(id, msg) {
+        const el = document.getElementById(id + 'Error');
+        if (el) { el.textContent = msg; el.classList.toggle('visible', !!msg); }
+        const field = document.getElementById(id);
+        if (field) field.classList.toggle('invalid', !!msg);
       }
-    }
 
-    async function validateForm() {
-      let valid = true;
+      async function validateEmail(email) {
+        const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailReg.test(email)) return false;
 
-      const nom = document.getElementById('nom');
-      if (!nom.value.trim()) {
-        showError('nom', 'Le nom est requis.'); valid = false;
-      } else { showError('nom', ''); }
+        const [localPart, domain] = email.split('@');
 
-      const email = document.getElementById('email');
-      if (!email.value.trim()) {
-        showError('email', 'L\'adresse e-mail est requise.'); valid = false;
-      } else if (!(await validateEmail(email.value))) {
-        showError('email', 'Cette adresse e-mail semble invalide ou le domaine n\'existe pas.'); valid = false;
-      } else { showError('email', ''); }
+        if (localPart.includes('+')) return false;
+        if (localPart.length < 2 || localPart.length > 64) return false;
+        if (localPart.startsWith('.') || localPart.endsWith('.')) return false;
+        if (localPart.includes('..')) return false;
 
-      const sujet = document.getElementById('sujet');
-      if (!sujet.value) {
-        showError('sujet', 'Veuillez choisir un sujet.'); valid = false;
-      } else { showError('sujet', ''); }
+        const disposableDomains = ['tempmail.com', 'guerrillamail.com', 'mailinator.com', '10minutemail.com', 'throwaway.email'];
+        if (disposableDomains.includes(domain)) return false;
 
-      const message = document.getElementById('message');
-      if (!message.value.trim() || message.value.trim().length < 10) {
-        showError('message', 'Le message doit contenir au moins 10 caractères.'); valid = false;
-      } else { showError('message', ''); }
+        try {
+          const response = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+          const data = await response.json();
+          return data.Status === 0 && data.Answer && data.Answer.length > 0;
+        } catch {
+          return true;
+        }
+      }
 
-      const rgpd = document.getElementById('rgpd');
-      if (!rgpd.checked) {
-        showError('rgpd', 'Veuillez accepter la politique de confidentialité.'); valid = false;
-      } else { showError('rgpd', ''); }
+      async function validateForm() {
+        let valid = true;
 
-      return valid;
-    }
+        const nom = document.getElementById('nom');
+        if (!nom.value.trim()) {
+          showError('nom', 'Le nom est requis.'); valid = false;
+        } else { showError('nom', ''); }
 
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      if (!(await validateForm())) return;
+        const email = document.getElementById('email');
+        if (!email.value.trim()) {
+          showError('email', 'L\'adresse e-mail est requise.'); valid = false;
+        } else if (!(await validateEmail(email.value))) {
+          showError('email', 'Cette adresse e-mail semble invalide ou le domaine n\'existe pas.'); valid = false;
+        } else { showError('email', ''); }
 
-      // Simuler l'envoi (pas de backend)
-      form.classList.add('hidden');
-      successDiv.classList.remove('hidden');
-    });
+        const sujet = document.getElementById('sujet');
+        if (!sujet.value) {
+          showError('sujet', 'Veuillez choisir un sujet.'); valid = false;
+        } else { showError('sujet', ''); }
 
-    document.getElementById('newMessage').addEventListener('click', () => {
-      form.reset();
-      form.classList.remove('hidden');
-      successDiv.classList.add('hidden');
-    });
+        const message = document.getElementById('message');
+        if (!message.value.trim() || message.value.trim().length < 10) {
+          showError('message', 'Le message doit contenir au moins 10 caractères.'); valid = false;
+        } else { showError('message', ''); }
+
+        const rgpd = document.getElementById('rgpd');
+        if (!rgpd.checked) {
+          showError('rgpd', 'Veuillez accepter la politique de confidentialité.'); valid = false;
+        } else { showError('rgpd', ''); }
+
+        return valid;
+      }
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!(await validateForm())) return;
+
+        form.classList.add('hidden');
+        successDiv.classList.remove('hidden');
+      });
+
+      document.getElementById('newMessage').addEventListener('click', () => {
+        form.reset();
+        form.classList.remove('hidden');
+        successDiv.classList.add('hidden');
+      });
+    }, { once: true });
   </script>
 </body>
 </html>

@@ -142,43 +142,44 @@
 
   <div id="siteFooter"></div>
 
-  <script src="../js/components.js"></script>
-  <script src="../js/script.js"></script>
+  <script src="../js/components.js" defer></script>
+  <script src="../js/script.js" defer></script>
   <script>
-    renderNav('recettes', '../');
-    renderFooter('../');
+    document.addEventListener('DOMContentLoaded', () => {
+      renderNav('recettes', '../');
+      renderFooter('../');
 
-    // Lire les paramètres URL ?categorie=... ou ?cuisine=...
-    const params = new URLSearchParams(window.location.search);
-    const urlCat = params.get('categorie');
-    const urlCui = params.get('cuisine');
-    const urlSearch = params.get('search');
+      const params = new URLSearchParams(window.location.search);
+      const urlCat = params.get('categorie');
+      const urlCui = params.get('cuisine');
+      const urlSearch = params.get('search');
 
-    if (urlCat) {
-      state.filters.categorie = urlCat;
-      const link = document.querySelector(`[data-filter="categorie"][data-value="${CSS.escape(urlCat)}"]`);
-      if (link) link.classList.add('active-filter');
-    }
-    if (urlCui) {
-      state.filters.cuisine = urlCui;
-      const link = document.querySelector(`[data-filter="cuisine"][data-value="${CSS.escape(urlCui)}"]`);
-      if (link) link.classList.add('active-filter');
-    }
+      if (urlCat) {
+        state.filters.categorie = urlCat;
+        const link = document.querySelector(`[data-filter="categorie"][data-value="${CSS.escape(urlCat)}"]`);
+        if (link) link.classList.add('active-filter');
+      }
+      if (urlCui) {
+        state.filters.cuisine = urlCui;
+        const link = document.querySelector(`[data-filter="cuisine"][data-value="${CSS.escape(urlCui)}"]`);
+        if (link) link.classList.add('active-filter');
+      }
 
-    const urlSaison = params.get('saison');
-    if (urlSaison) {
-      state.filters.saison = urlSaison;
-      const link = document.querySelector(`[data-filter="saison"][data-value="${CSS.escape(urlSaison)}"]`);
-      if (link) link.classList.add('active-filter');
-    }
+      const urlSaison = params.get('saison');
+      if (urlSaison) {
+        state.filters.saison = urlSaison;
+        const link = document.querySelector(`[data-filter="saison"][data-value="${CSS.escape(urlSaison)}"]`);
+        if (link) link.classList.add('active-filter');
+      }
 
-    if (urlSearch) {
-      state.search = urlSearch;
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) searchInput.value = urlSearch;
-    }
+      if (urlSearch) {
+        state.search = urlSearch;
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.value = urlSearch;
+      }
 
-    applyFilters();
+      applyFilters();
+    }, { once: true });
   </script>
 </body>
 </html>
