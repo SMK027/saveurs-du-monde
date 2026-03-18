@@ -605,7 +605,49 @@ footer { background: var(--dark); color: #fff; }
 /* Vidéo */
 .rd-video-section { padding-bottom: 1.5rem; }
 .rd-video-wrapper { position: relative; padding-top: 56.25%; border-radius: calc(var(--radius) - 4px); overflow: hidden; }
+.rd-video-placeholder,
 .rd-video-wrapper iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+.rd-video-placeholder {
+  display: block;
+  padding: 0;
+  background: #111;
+  cursor: pointer;
+}
+.rd-video-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.rd-video-placeholder-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(17,17,17,.15), rgba(17,17,17,.55));
+}
+.rd-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(224,123,57,.92);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  box-shadow: 0 12px 28px rgba(0,0,0,.28);
+}
+.rd-video-label {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  color: #fff;
+  font-weight: 700;
+  font-size: .95rem;
+}
 
 /* Ingrédients */
 /* liste ingrédients → voir section "Ingrédients avec prix" ci-dessus */

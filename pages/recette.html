@@ -34,7 +34,7 @@
   <script src="../js/components.js" defer></script>
   <script src="../js/script.js" defer></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    function initRecettePage() {
       renderNav('recettes', '../');
       renderFooter('../');
 
@@ -163,20 +163,33 @@
         return r % 1 === 0 ? String(r) : r.toFixed(1).replace('.', ',');
       }
 
+      function getYouTubeVideoId(url) {
+        const match = url.match(/\/embed\/([^?&"']+)/);
+        return match ? match[1] : null;
+      }
+
       /* ── Bloc vidéo ── */
-      const videoBlock = recipe.video ? `
+      const videoId = recipe.video ? getYouTubeVideoId(recipe.video) : null;
+      const videoBlock = recipe.video && videoId ? `
         <section class="rd-section rd-video-section">
           <h2 class="rd-section-title">🎬 Vidéo de la recette</h2>
           <div class="rd-video-wrapper">
-            <iframe
-              src="${recipe.video}?rel=0&modestbranding=1"
-              title="Vidéo : ${recipe.titre}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              loading="lazy"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
-            ></iframe>
+            <button
+              type="button"
+              class="rd-video-placeholder"
+              data-video-src="${recipe.video}?rel=0&modestbranding=1"
+              aria-label="Lire la vidéo de ${recipe.titre}"
+            >
+              <img
+                src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg"
+                alt="Aperçu vidéo : ${recipe.titre}"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="rd-video-placeholder-overlay"></span>
+              <span class="rd-video-play">▶</span>
+              <span class="rd-video-label">Lire la vidéo</span>
+            </button>
           </div>
         </section>` : '';
 
@@ -202,10 +215,6 @@
           </div>
         </div>
 
-
-      if (typeof window.initLazyBackgrounds === 'function') {
-        window.initLazyBackgrounds(main);
-      }
         <!-- Contenu principal -->
         <div class="rd-content">
 
@@ -312,6 +321,26 @@
 
         </div>
       `;
+
+      if (typeof window.initLazyBackgrounds === 'function') {
+        window.initLazyBackgrounds(main);
+      }
+
+      document.querySelectorAll('.rd-video-placeholder[data-video-src]').forEach(button => {
+        button.addEventListener('click', () => {
+          const src = button.dataset.videoSrc;
+          if (!src) return;
+
+          const iframe = document.createElement('iframe');
+          iframe.src = src;
+          iframe.title = button.getAttribute('aria-label') || 'Vidéo de recette';
+          iframe.loading = 'lazy';
+          iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+          iframe.allowFullscreen = true;
+
+          button.replaceWith(iframe);
+        }, { once: true });
+      });
 
       /* ── Simulateur de prix ── */
       (function () {
@@ -445,7 +474,17 @@
 
         update();
       })();
-    }, { once: true });
+
+      document.removeEventListener('DOMContentLoaded', initRecettePage);
+    }
+
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initRecettePage);
+    } else {
+      initRecettePage();
+    }
   </script>
 </body>
 </html>
