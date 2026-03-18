@@ -20,7 +20,10 @@ Le site **Saveurs du Monde** a été optimisé pour les moteurs de recherche sel
 - ✅ **Métadonnées complètes** : Title, description, robots
 - ✅ **Données structurées** : 8 schémas JSON-LD (recipe, organization, FAQ, etc.)
 - ✅ **Rich snippets** : Affichage enrichi dans les résultats Google
-- ✅ **Performance web** : Preconnect, dns-prefetch, lazy loading
+- ✅ **Performance web** : Preconnect, dns-prefetch, lazy loading, scripts defer
+- ✅ **Médias progressifs** : images SD au premier rendu puis HD au clic
+- ✅ **Embeds tiers optimisés** : vidéo YouTube chargée uniquement au clic
+- ✅ **Compression serveur** : Brotli + gzip via `.htaccess`
 - ✅ **Partage social** : Open Graph et Twitter Cards
 - ✅ **Gestion du crawl** : robots.txt et sitemap.xml
 - ✅ **Accessibilité** : Landmarks HTML5, heading hierarchy
@@ -622,6 +625,92 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 
 ---
 
+### 5. Chargement différé des scripts (`defer`)
+
+Les scripts applicatifs sont chargés en mode différé pour éviter le blocage du rendu initial.
+
+**Principe appliqué** :
+- scripts externes en `defer`
+- initialisation des scripts inline via `DOMContentLoaded` ou fonction dédiée
+- conservation de l'ordre d'exécution sans bloquer le parsing HTML
+
+**Fichiers concernés** :
+- `index.html`
+- `pages/about.html`
+- `pages/categories.html`
+- `pages/contact.html`
+- `pages/recettes.html`
+- `pages/recette.html`
+
+**Impact** :
+- ⚡ First Paint plus rapide
+- 🧭 Navigation plus fluide sur mobile
+- 📉 Réduction du temps de blocage JavaScript
+
+---
+
+### 6. Chargement progressif des images (SD → HD au clic)
+
+Pour réduire le poids du premier rendu, certaines images sont affichées en basse définition puis remplacées en HD uniquement au clic utilisateur.
+
+**Mécanisme** :
+- image initiale légère dans `src` ou `data-bg`
+- source HD dans `data-hd-src` (images) ou `data-bg-hd` (backgrounds)
+- préchargement HD avant remplacement visuel
+
+**Implémentation technique** :
+- helper global : `initClickToHdMedia()` dans `js/components.js`
+- classes d'état : `.progressive-media`, `.progressive-bg`, `.hd-loaded`
+
+**Impact** :
+- 📉 baisse du poids transféré au chargement initial
+- 📱 meilleure performance sur réseaux mobiles
+- 👤 qualité maximale conservée à la demande
+
+---
+
+### 7. Lazy loading des backgrounds
+
+Les images de fond critiques non visibles immédiatement sont chargées à l'approche du viewport via `IntersectionObserver`.
+
+**Mécanisme** :
+- attribut `data-bg` pour la source
+- activation progressive via `initLazyBackgrounds()` dans `js/components.js`
+
+**Impact** :
+- ⚡ moins de requêtes au premier rendu
+- 🧠 priorité réseau mieux répartie
+
+---
+
+### 8. Embeds tiers à la demande (YouTube)
+
+La page détail recette utilise désormais un placeholder vidéo (thumbnail) et ne crée l'`iframe` YouTube qu'au clic.
+
+**Bénéfices** :
+- 📉 moins de scripts tiers au chargement initial
+- 🧹 réduction du bruit console au premier rendu (cookies/permissions)
+- 🚀 meilleure interactivité initiale
+
+---
+
+### 9. Compression serveur via `.htaccess`
+
+Compression HTTP activée côté Apache avec fallback robuste.
+
+**Configuration mise en place** :
+- Brotli prioritaire (`mod_brotli`) si disponible
+- gzip fallback (`mod_deflate`)
+- header `Vary: Accept-Encoding`
+- exclusion des fichiers déjà compressés/binaire (images, vidéos, archives, PDF)
+
+**Impact** :
+- 📦 HTML/CSS/JS/JSON plus légers en transit
+- ⏱️ réduction du temps de téléchargement
+- 📈 amélioration potentielle des Core Web Vitals
+
+---
+
 ## Optimisation par page
 
 ### 📄 index.html (Accueil)
@@ -641,6 +730,7 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 **Contenu clé** :
 - ✅ Héro avec call-to-action
 - ✅ 3 recettes en vedette avec liens
+- ✅ Cartes recettes en image SD puis HD au clic
 - ✅ Grille de catégories
 - ✅ Moteur de recherche visible
 
@@ -664,6 +754,11 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 - ✅ Page propre `robots: index` pour indexation
 - ✅ Évite le contenu dupliqué
 
+**Optimisation médias listing** :
+- ✅ Cartes rendues en JS avec image basse définition initiale
+- ✅ Passage en HD au clic sur l'image uniquement
+- ✅ Comportement modal conservé sur clic carte
+
 ---
 
 ### 🍝 pages/recette.html (Détail recette)
@@ -684,7 +779,7 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 - 👨‍🍳 Étapes de préparation
 - ⏱️ Temps, portions, difficulté
 - ⭐ Allergènes
-- 🎥 Vidéo (si disponible)
+- 🎥 Vidéo chargée à la demande (placeholder → iframe au clic)
 - 📥 Bouton imprimer/PDF
 - 💰 Simulateur de prix
 
@@ -699,6 +794,10 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 - ✅ OG + Twitter tags
 - ✅ Lien vers schema.json
 - ✅ Bonne structure H1/H2
+
+**Spécificités récentes** :
+- `pages/categories.html` : backgrounds SD au premier rendu puis HD au clic
+- `pages/about.html` : images et avatars en SD puis HD au clic
 
 ---
 
@@ -755,7 +854,7 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 - ✅ Meta tags présentes
 - ✅ Viewport configuré
 - ✅ Crawlable
-- ✅ No console errors
+- ✅ Pas d'erreurs bloquantes JS
 
 ---
 
@@ -813,6 +912,11 @@ Sitemap: https://saveursdumonde.leofranz.fr/sitemap.xml
 - [x] HTML5 Landmarks
 - [x] Heading hierarchy (H1/H2/H3)
 - [x] Preconnect + DNS prefetch
+- [x] Scripts externes en defer
+- [x] Lazy loading des backgrounds via IntersectionObserver
+- [x] Images progressives SD → HD au clic
+- [x] Placeholder vidéo YouTube + chargement iframe au clic
+- [x] Compression Apache Brotli + gzip (`.htaccess`)
 - [x] Charset UTF-8
 - [x] Viewport meta
 - [x] Schema.json centralisé
@@ -859,6 +963,6 @@ Après implémentation complète :
 ---
 
 **Dernière mise à jour** : 18 mars 2026  
-**Version** : 1.0  
+**Version** : 1.1  
 **Auteur** : Saveurs du Monde SEO Team
 
