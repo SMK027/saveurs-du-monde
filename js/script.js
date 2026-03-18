@@ -979,6 +979,24 @@ function getSaisonClass(s) {
 // ─────────────────────────────────────────────────────
 // RENDU DES CARTES
 // ─────────────────────────────────────────────────────
+function getLowResImageUrl(imageUrl) {
+  if (!imageUrl) return imageUrl;
+
+  // Unsplash : réduire largeur/qualité pour le premier rendu.
+  if (imageUrl.includes("images.unsplash.com")) {
+    return imageUrl
+      .replace(/([?&])w=\d+/i, "$1w=240")
+      .replace(/([?&])q=\d+/i, "$1q=35");
+  }
+
+  // Wikimedia : utiliser une vignette plus petite quand l'URL est au format /XXXpx-...
+  if (imageUrl.includes("upload.wikimedia.org")) {
+    return imageUrl.replace(/\/\d+px-/i, "/240px-");
+  }
+
+  return imageUrl;
+}
+
 function renderCards(recipes) {
   const grid = document.getElementById("recipeGrid");
   const noResults = document.getElementById("noResults");
@@ -996,6 +1014,7 @@ function renderCards(recipes) {
   count.textContent = `${recipes.length} recette${recipes.length > 1 ? "s" : ""} trouvée${recipes.length > 1 ? "s" : ""}`;
 
   recipes.forEach(recipe => {
+    const lowResImage = getLowResImageUrl(recipe.image);
     const card = document.createElement("article");
     card.className = "recipe-card";
     card.setAttribute("role", "button");
@@ -1003,7 +1022,7 @@ function renderCards(recipes) {
     card.setAttribute("aria-label", `Voir la recette : ${recipe.titre}`);
 
     card.innerHTML = `
-      <img src="${recipe.image}" alt="${recipe.titre}" loading="lazy" decoding="async" />
+      <img src="${lowResImage}" data-hd-src="${recipe.image}" alt="${recipe.titre}" loading="lazy" decoding="async" />
       <div class="card-body">
         <div class="card-tags">
           <span class="tag tag-categorie">${recipe.categorie}</span>
@@ -1020,11 +1039,24 @@ function renderCards(recipes) {
       </div>
     `;
 
+    const cardImage = card.querySelector("img[data-hd-src]");
+    if (cardImage) {
+      // Premier clic sur l'image = chargement HD, sans ouvrir la modal.
+      cardImage.addEventListener("click", event => {
+        if (cardImage.dataset.hdLoaded === "1") return;
+        event.stopPropagation();
+      });
+    }
+
     card.addEventListener("click", () => openModal(recipe));
     card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") openModal(recipe); });
 
     grid.appendChild(card);
   });
+
+  if (typeof window.initClickToHdMedia === "function") {
+    window.initClickToHdMedia(grid);
+  }
 }
 
 // ─────────────────────────────────────────────────────
