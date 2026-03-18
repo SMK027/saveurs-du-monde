@@ -1003,7 +1003,7 @@ function renderCards(recipes) {
     card.setAttribute("aria-label", `Voir la recette : ${recipe.titre}`);
 
     card.innerHTML = `
-      <img src="${recipe.image}" alt="${recipe.titre}" loading="lazy" />
+      <img src="${recipe.image}" alt="${recipe.titre}" loading="lazy" decoding="async" />
       <div class="card-body">
         <div class="card-tags">
           <span class="tag tag-categorie">${recipe.categorie}</span>
@@ -1097,8 +1097,48 @@ function renderActiveFilters() {
 // ─────────────────────────────────────────────────────
 const modal = document.getElementById("modal");
 
-function openModal(recipe) {  if (!modal) return;  document.getElementById("modalImg").src = recipe.image;
-  document.getElementById("modalImg").alt = recipe.titre;
+function initLazyBackgrounds(root = document) {
+  const lazyBackgrounds = Array.from(root.querySelectorAll(".lazy-bg[data-bg]"));
+  if (lazyBackgrounds.length === 0) return;
+
+  const loadBackground = element => {
+    const source = element.dataset.bg;
+    if (!source) return;
+
+    element.style.backgroundImage = `url("${source}")`;
+    element.classList.add("lazy-bg-loaded");
+    delete element.dataset.bg;
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    lazyBackgrounds.forEach(loadBackground);
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      loadBackground(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, {
+    rootMargin: "200px 0px",
+    threshold: 0.01
+  });
+
+  lazyBackgrounds.forEach(element => observer.observe(element));
+}
+
+window.initLazyBackgrounds = initLazyBackgrounds;
+
+function openModal(recipe) {
+  if (!modal) return;
+
+  const modalImg = document.getElementById("modalImg");
+  modalImg.src = recipe.image;
+  modalImg.alt = recipe.titre;
+  modalImg.loading = "eager";
+  modalImg.decoding = "async";
   document.getElementById("modalTitle").textContent = recipe.titre;
 
   // Bouton "Détails" → page dédiée
@@ -1227,6 +1267,8 @@ if (searchInput && searchBtn) {
 // ─────────────────────────────────────────────────────
 // INITIALISATION
 // ─────────────────────────────────────────────────────
+initLazyBackgrounds();
+
 if (document.getElementById("recipeGrid")) {
   applyFilters();
   document.querySelectorAll("[data-value='all']").forEach(a => a.classList.add("active-filter"));

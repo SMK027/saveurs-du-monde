@@ -172,6 +172,8 @@
               title="Vidéo : ${recipe.titre}"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
             ></iframe>
           </div>
@@ -180,7 +182,7 @@
       /* ── Rendu complet ── */
       main.innerHTML = `
         <!-- Hero -->
-        <div class="rd-hero" style="background-image: url('${recipe.image}')">
+        <div class="rd-hero lazy-bg" data-bg="${recipe.image}">
           <div class="rd-hero-overlay">
             <div class="rd-hero-inner">
               <a href="recettes.html" class="rd-back">← Toutes les recettes</a>
@@ -199,6 +201,10 @@
           </div>
         </div>
 
+
+      if (typeof window.initLazyBackgrounds === 'function') {
+        window.initLazyBackgrounds(main);
+      }
         <!-- Contenu principal -->
         <div class="rd-content">
 
