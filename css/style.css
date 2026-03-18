@@ -73,6 +73,13 @@ img { display: block; max-width: 100%; }
   position: sticky;
   top: 0;
   z-index: 100;
+  min-height: var(--header-h);
+  background: var(--dark);
+}
+
+#siteFooter {
+  min-height: 250px;
+  background: var(--dark);
 }
 header {
   background: var(--dark);
@@ -233,6 +240,11 @@ main { flex: 1; }
 .link-more:hover { text-decoration: underline; }
 
 #resultsCount { max-width: var(--max-w); margin: 0 auto 1rem; padding: 1.2rem 1.5rem 0; color: var(--muted); font-size: .88rem; }
+
+/* Réserve de place avant l'injection JS des cartes (évite les sauts de mise en page) */
+#recipeGrid:empty {
+  min-height: 920px;
+}
 
 /* =====================================================
    GRILLE RECETTES + CARTES
@@ -555,6 +567,8 @@ footer { background: var(--dark); color: #fff; }
   .cat-grid { grid-template-columns: repeat(2,1fr); gap: 1rem; }
   .cat-grid-full { grid-template-columns: 1fr; }
   .recipe-grid { grid-template-columns: 1fr; gap: 1.2rem; padding: 0 1.5rem 2rem; }
+  #recipeGrid:empty { min-height: 1220px; }
+  #siteFooter { min-height: 360px; }
   .form-row { grid-template-columns: 1fr; }
   .hero { min-height: 340px; }
   .hero-content { padding: 2rem 1.5rem; }
@@ -575,6 +589,7 @@ footer { background: var(--dark); color: #fff; }
   .cat-card { padding: 1.5rem 1rem; }
   .cat-icon { font-size: 2rem; margin-bottom: .5rem; }
   .cta-inner h2 { font-size: 1.4rem; }
+  #recetteDetail:has(.rd-loading) { min-height: 980px; }
 }
 
 /* =====================================================
@@ -595,6 +610,9 @@ footer { background: var(--dark); color: #fff; }
 .recette-detail-page { min-height: 60vh; }
 .rd-loading, .rd-not-found { text-align: center; padding: 4rem 1rem; font-size: 1.1rem; color: var(--muted); }
 .rd-not-found .btn { margin-top: 1.2rem; }
+
+/* Stabilise la page détail tant que le placeholder de chargement est affiché */
+#recetteDetail:has(.rd-loading) { min-height: 1200px; }
 
 /* Hero */
 .rd-hero { position: relative; height: 420px; background-size: cover; background-position: center; }
